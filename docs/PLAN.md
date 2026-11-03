@@ -147,3 +147,48 @@ POS and hardware, payroll, staff chat, waivers, waitlists, membership and pack s
 | Arketa API is "as-is", with no sandbox or webhooks | Separate test location, polling with caching, monitoring, and fallback to Arketa widgets |
 | Reset Room can't be booked via the API | Confirm the setup in the demo; the fallback is our own booking engine |
 | Data lives in two places | Arketa is always the source of truth; our layer only caches and links to it |
+
+## 11. Cost estimate (tools only)
+
+_Researched November 2, 2026. Arketa's studio plans are quote-only, so its figures come from third-party reviews and need confirming in the demo._
+
+**Summary:** about **$650–1,150 a month** in software, plus **about 2.7–2.9% of card sales** in processing, plus **about $500–700 up front** for hardware. Design and development time for the custom layer isn't included.
+
+### Monthly
+
+| Tool | Est. cost / month | Notes |
+|---|---|---|
+| Arketa Studio Suite | $350–700 | Only tier with the branded app. Reviewers report about $699; one estimate range is $349–699. Core (~$200) and Growth (~$450) lack the branded app; Core also lacks marketing email and SMS. |
+| Gusto payroll (Simple) | ~$140 | $49 base + $6 per person, assuming 15 staff |
+| Slack Pro (optional staff chat) | $0–130 | $7.25–8.75 per user, or $0 using Arketa or WhatsApp |
+| Zapier Professional | $20–30 | Lead form → Arketa (750 tasks) |
+| Cloudflare Workers Paid | $5 | Covers the site, D1, cron sync and Durable Objects at this scale |
+| Domain | ~$1 | About $10–12 a year |
+| **Total** | **~$650–1,150** | |
+
+### Card processing
+
+Arketa uses Stripe: 2.9% + 30¢ online, 2.7% + 5¢ in person. One reviewer says studio plans pay Stripe's rate with no Arketa markup (to confirm). Example: $40,000 a month in card sales ≈ $1,100–1,200 in fees.
+
+### One-time
+
+| Item | Est. cost | Notes |
+|---|---|---|
+| Card readers | ~$360 | Stripe S700 ($299) for the front desk + M2 ($59) as a spare. Confirm Arketa-supported hardware. |
+| Receipt printer and cash drawer | ~$150–300 | Estimate; Arketa doesn't publish hardware prices |
+| Arketa setup / onboarding | Unknown | Ask in demo |
+
+### Only if needed later
+
+- **Video on demand on Cloudflare Stream:** $5 per 1,000 minutes stored + $1 per 1,000 minutes watched. Not needed if Arketa's included video library is enough.
+- **Custom app (Phase 4):** Apple Developer $99/year, Google Play $25 one-time, Expo $0–19/month.
+- **Arketa enterprise agreement:** reported to start at $10,000/year. Only if API limits block Phase 2–3 work.
+
+### Pricing questions for the Arketa demo
+
+1. What's the exact Studio Suite price, and is there an annual discount?
+2. Is the branded app included in Suite, or a paid add-on?
+3. Is there any Arketa markup on Stripe processing for studio plans?
+4. What do SMS and text campaigns cost?
+5. Is there a setup or onboarding fee?
+6. Which card readers, receipt printers and cash drawers are supported, and at what price?
