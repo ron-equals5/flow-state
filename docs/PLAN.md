@@ -24,6 +24,44 @@ We build the Flow State platform ourselves: the website, booking for all five bo
 | Hybrid (Arketa underneath, custom layer on top) | **Fallback only.** Arketa's API limits the custom booking types. Arketa runs month to month, so it stays available if the go/no-go fails (§8). |
 | Off-the-shelf only (Arketa or Walla with an embedded widget) | Rejected. The Flow and Reset Room would be limited to what those tools already do. |
 
+### Comparison: Custom vs. Arketa vs. Walla
+
+_Researched November 2, 2026. Arketa's studio plans and Walla's Pro plan are quote-only, so confirm in demos. ✓ built in · ◐ partial, add-on or unconfirmed · ✕ not available._
+
+| | **Custom (recommended)** | **Arketa · Studio Suite** | **Walla · Core / Pro** |
+|---|---|---|---|
+| **Cost** | | | |
+| Platform price | $5–45/mo Cloudflare | ~$350–700/mo (reported) | From $299/mo (Core); Pro reported ~$599 |
+| Branded app | Built with Expo; $99/yr Apple + $25 Google | Included in Suite (confirm) | $169/mo add-on, or included in Pro (confirm) |
+| Total software / month | **~$200–450** | **~$650–1,150** | **~$600–900** |
+| Card processing | Stripe 2.9% + 30¢ / 2.7% + 5¢, plus ~0.7% on memberships | Stripe; studio markup unconfirmed | Stripe; no added platform fee; optional 3.9% client-paid fee |
+| Up-front | Development time + ~$500–700 hardware | Setup fee unknown + hardware | Setup fee not published; app build reported ~$500 |
+| Contract | None | Month to month or annual | Price depends on term length |
+| **Signature bookings** | | | |
+| The Flow (block → start time) | ✓ Exactly as designed | ◐ Small classes in a normal list; custom picker possible via API | ◐ Small classes in a normal list; no API |
+| Reset Room + invite a guest | ✓ | ◐ Room booking not in API; native setup to confirm | ◐ Appointments, seat maps, guest passes; to confirm |
+| Restricted Flow blocks | ✓ Eligibility rules | ◐ Likely via purchase restrictions | ◐ Likely via plan restrictions |
+| Events (no credits) & series | ✓ | ✓ | ✓ |
+| **Operations** | | | |
+| Schedule with all four filters | ✓ | ◐ Standard widget filters | ◐ Standard widget filters |
+| Memberships, packs, intro offers | ✓ Stripe Billing | ✓ | ✓ |
+| Waivers & waitlists | ✓ Built | ✓ | ✓ |
+| Front-desk POS & hardware | ✓ Stripe Terminal | ✓ Studio tiers | ◐ Not confirmed |
+| Payroll | ◐ Export to Gusto | ◐ Pay-rate reporting; still need payroll service | ◐ Pay rates per class type; still need payroll service |
+| Email & text journeys | ✓ Workflows + Twilio | ◐ Growth tier and up | ◐ Full suite on Pro |
+| Video on demand | ✓ Cloudflare Stream | ✓ | ✓ |
+| ClassPass | ◐ Needs partner approval | ✓ | ◐ Confirm |
+| **Control & risk** | | | |
+| Fully branded website | ✓ | ◐ Branded site; booking is their widget | ◐ Reported $199/mo + $2,800 build (unverified) |
+| Developer API | ✓ We own it | ◐ Limited, as-is, no webhooks | ✕ None published |
+| Data ownership & export | ✓ Full | ◐ Export to confirm | ◐ Owned; export process not described |
+| Time to open | ◐ 3–4 weeks opening-ready; 10–12 to parity | ✓ Days to weeks | ✓ Days to weeks |
+| Support & upkeep | ◐ We are the vendor | ✓ Account manager (API unsupported) | ✓ Vendor support |
+
+- **Choose custom if** The Flow, the Reset Room and the brand experience are the priority, and there's a developer to own the platform.
+- **Choose Arketa if** opening fast with the least build matters most. It's the best fallback.
+- **Choose Walla if** an all-in-one tool with published pricing is preferred and the signature bookings can live inside its standard booking.
+
 ## 2. Build vs. rent
 
 | Area | Build (Cloudflare + Claude) | Rent |

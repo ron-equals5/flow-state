@@ -173,6 +173,17 @@
   .opt { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
   @media (max-width: 860px) { .opt { grid-template-columns: 1fr; } }
   @media (max-width: 640px) { .checklist { grid-template-columns: 1fr; } }
+  .mid { display: inline-block; font-size: 12px; font-weight: 800; padding: 2px 9px; border-radius: 999px; background: rgba(255,196,87,.14); color: #ffc457; white-space: nowrap; }
+  .legend { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+  .compare table { min-width: 860px; }
+  .compare th.us { color: var(--pink); }
+  .compare td.us { background: rgba(230,79,185,.07); color: var(--ink); }
+  .compare tr.grp td { background: rgba(153,130,227,.1); color: var(--lavender); font-size: 12px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; padding: 10px 18px; }
+  .compare td .yes, .compare td .no, .compare td .mid { margin-right: 6px; }
+  .compare td:first-child, .compare th:first-child { position: sticky; left: 0; z-index: 1; background: var(--navy-2); width: 200px; box-shadow: 1px 0 0 var(--line); }
+  .compare tr.grp td:first-child { position: static; box-shadow: none; }
+  .legend > span { display: inline-flex; align-items: center; gap: 6px; }
+  @media (max-width: 640px) { .compare td:first-child, .compare th:first-child { width: 128px; min-width: 128px; padding: 12px; font-size: 14px; } }
 </style>
 </head>
 <body>
@@ -182,6 +193,7 @@
     <a class="brand" href="#top">Flow <span>State</span></a>
     <div class="links">
       <a href="#approach">Approach</a>
+      <a href="#compare">Compare</a>
       <a href="#build">Build vs rent</a>
       <a href="#users">Users</a>
       <a href="#booking">Booking</a>
@@ -245,9 +257,60 @@
   </div>
 </section>
 
+<section id="compare">
+  <div class="wrap">
+    <div class="sec-head"><span class="num">02</span><h2>Custom vs. Arketa vs. Walla</h2></div>
+    <p class="intro">How building our own platform compares with running the studio on Arketa or Walla. Vendor prices are from their sites and third-party reviews, researched November 2, 2026. Arketa's studio plans and Walla's Pro plan are quote-only, so confirm in demos.</p>
+    <div class="legend"><span><span class="yes">✓</span> Built in or fully supported</span><span><span class="mid">◐</span> Partial, add-on or unconfirmed</span><span><span class="no">✕</span> Not available</span></div>
+    <div class="table compare">
+      <table>
+        <thead><tr><th></th><th class="us">Custom (recommended)</th><th>Arketa · Studio Suite</th><th>Walla · Core / Pro</th></tr></thead>
+        <tbody>
+          <tr class="grp"><td colspan="4">Cost</td></tr>
+          <tr><td>Platform price</td><td class="us">$5–45 / mo for Cloudflare</td><td>~$350–700 / mo (reported; quote-only)</td><td>From $299 / mo (Core). Pro quote-only, reported ~$599.</td></tr>
+          <tr><td>Branded app</td><td class="us">Built with Expo; $99 / yr Apple + $25 Google</td><td>Included in Suite (confirm)</td><td>$169 / mo add-on, or included in Pro (confirm)</td></tr>
+          <tr><td>Total software / month</td><td class="us"><b>~$200–450</b></td><td><b>~$650–1,150</b></td><td><b>~$600–900</b></td></tr>
+          <tr><td>Card processing</td><td class="us">Stripe 2.9% + 30¢ online, 2.7% + 5¢ in person, plus ~0.7% on memberships</td><td>Stripe rates; studio markup unconfirmed</td><td>Stripe; no added platform fee (rate not published). Optional 3.9% fee clients pay.</td></tr>
+          <tr><td>Up-front</td><td class="us">Development time (largest cost) + ~$500–700 hardware</td><td>Setup fee unknown + hardware</td><td>Setup fee not published; app build reported ~$500</td></tr>
+          <tr><td>Contract</td><td class="us">None</td><td>Month to month or annual</td><td>Price depends on term length</td></tr>
+
+          <tr class="grp"><td colspan="4">Flow State's signature bookings</td></tr>
+          <tr><td>The Flow: block, then start time</td><td class="us"><span class="yes">✓</span> Exactly as designed</td><td><span class="mid">◐</span> Each start time is a small class in a normal list. A custom picker is possible through the API.</td><td><span class="mid">◐</span> Each start time is a small class in a normal list. No API for a custom picker.</td></tr>
+          <tr><td>Reset Room + invite a guest</td><td class="us"><span class="yes">✓</span> Book, invite a member or a first-timer with a guest pass</td><td><span class="mid">◐</span> Room booking not in the API; native setup to confirm</td><td><span class="mid">◐</span> Appointments, seat maps and guest passes exist; room rental with invite to confirm</td></tr>
+          <tr><td>Restricted Flow blocks</td><td class="us"><span class="yes">✓</span> Eligibility rules</td><td><span class="mid">◐</span> Likely via purchase restrictions</td><td><span class="mid">◐</span> Likely via plan restrictions</td></tr>
+          <tr><td>Events (no credits) &amp; series</td><td class="us"><span class="yes">✓</span></td><td><span class="yes">✓</span></td><td><span class="yes">✓</span></td></tr>
+
+          <tr class="grp"><td colspan="4">Studio operations</td></tr>
+          <tr><td>Schedule with all four filters</td><td class="us"><span class="yes">✓</span> Instructor, type, class, heat</td><td><span class="mid">◐</span> Standard widget filters</td><td><span class="mid">◐</span> Standard widget filters</td></tr>
+          <tr><td>Memberships, packs, intro offers</td><td class="us"><span class="yes">✓</span> Built on Stripe Billing</td><td><span class="yes">✓</span></td><td><span class="yes">✓</span></td></tr>
+          <tr><td>Waivers &amp; waitlists</td><td class="us"><span class="yes">✓</span> Built (waiver text needs legal review)</td><td><span class="yes">✓</span></td><td><span class="yes">✓</span></td></tr>
+          <tr><td>Front-desk POS &amp; hardware</td><td class="us"><span class="yes">✓</span> Our screens + Stripe Terminal</td><td><span class="yes">✓</span> Studio tiers</td><td><span class="mid">◐</span> Not confirmed on their site</td></tr>
+          <tr><td>Payroll</td><td class="us"><span class="mid">◐</span> Export to Gusto (~$140 / mo)</td><td><span class="mid">◐</span> Pay-rate reporting; still need a payroll service</td><td><span class="mid">◐</span> Pay rates per class type; still need a payroll service</td></tr>
+          <tr><td>Email &amp; text journeys</td><td class="us"><span class="yes">✓</span> Workflows + Twilio</td><td><span class="mid">◐</span> Growth tier and up</td><td><span class="mid">◐</span> Full suite on Pro</td></tr>
+          <tr><td>Video on demand</td><td class="us"><span class="yes">✓</span> Cloudflare Stream</td><td><span class="yes">✓</span> Included</td><td><span class="yes">✓</span> Included</td></tr>
+          <tr><td>ClassPass</td><td class="us"><span class="mid">◐</span> Needs ClassPass partner approval</td><td><span class="yes">✓</span> Integration</td><td><span class="mid">◐</span> Listed on review sites; confirm</td></tr>
+          <tr><td>Staff chat</td><td class="us"><span class="mid">◐</span> Slack or WhatsApp</td><td><span class="mid">◐</span> Separate tool</td><td><span class="mid">◐</span> Separate tool</td></tr>
+
+          <tr class="grp"><td colspan="4">Control &amp; risk</td></tr>
+          <tr><td>Fully branded website</td><td class="us"><span class="yes">✓</span></td><td><span class="mid">◐</span> Suite includes a branded site; booking is their widget</td><td><span class="mid">◐</span> Website reported at $199 / mo + $2,800 build (unverified)</td></tr>
+          <tr><td>Developer API</td><td class="us"><span class="yes">✓</span> We own it</td><td><span class="mid">◐</span> Limited, "as-is", no webhooks</td><td><span class="no">✕</span> None published</td></tr>
+          <tr><td>Data ownership &amp; export</td><td class="us"><span class="yes">✓</span> Full</td><td><span class="mid">◐</span> Export to confirm</td><td><span class="mid">◐</span> "You own your data"; export process not described</td></tr>
+          <tr><td>Time to open</td><td class="us"><span class="mid">◐</span> 3–4 weeks to opening-ready; 10–12 to parity</td><td><span class="yes">✓</span> Days to weeks of setup</td><td><span class="yes">✓</span> Days to weeks of setup</td></tr>
+          <tr><td>Support &amp; upkeep</td><td class="us"><span class="mid">◐</span> We are the vendor</td><td><span class="yes">✓</span> Account manager (API unsupported)</td><td><span class="yes">✓</span> Vendor support</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="grid g3" style="margin-top:16px">
+      <div class="card accent"><span class="tag custom">Choose custom if…</span><p>The Flow, the Reset Room and the brand experience are the priority, and there's a developer to own the platform. Lowest running cost and no limits.</p></div>
+      <div class="card"><span class="tag std">Choose Arketa if…</span><p>Opening fast with the least build matters most, and a limited API is enough for a custom layer later. Best option if we fall back.</p></div>
+      <div class="card"><span class="tag std">Choose Walla if…</span><p>An all-in-one tool with published pricing is preferred and The Flow and Reset Room can live inside its standard booking. No custom booking on top.</p></div>
+    </div>
+  </div>
+</section>
+
 <section id="build">
   <div class="wrap">
-    <div class="sec-head"><span class="num">02</span><h2>Build vs. rent</h2></div>
+    <div class="sec-head"><span class="num">03</span><h2>Build vs. rent</h2></div>
     <div class="table">
       <table>
         <thead><tr><th>Area</th><th>We build</th><th>We rent</th></tr></thead>
@@ -273,7 +336,7 @@
 
 <section id="users">
   <div class="wrap">
-    <div class="sec-head"><span class="num">03</span><h2>Who uses what</h2></div>
+    <div class="sec-head"><span class="num">04</span><h2>Who uses what</h2></div>
     <p class="intro">Everyone uses the Flow State platform, with access based on their role.</p>
     <div class="grid g3">
       <div class="card"><span class="tag std">Admin + reports</span><h3>Owner / Manager</h3><p>Schedule builder, pricing and products, staff and pay rates, reporting, payroll export.</p></div>
@@ -288,7 +351,7 @@
 
 <section id="booking">
   <div class="wrap">
-    <div class="sec-head"><span class="num">04</span><h2>Spaces &amp; bookings</h2></div>
+    <div class="sec-head"><span class="num">05</span><h2>Spaces &amp; bookings</h2></div>
     <div class="grid g3" style="margin-bottom:40px">
       <div class="card"><span class="tag std">1st Floor</span><h3>Non-heated studio</h3><p>Instructor-led group classes and The Flow circuit.</p></div>
       <div class="card"><span class="tag std">2nd Floor</span><h3>Infrared-heated studio</h3><p>Heated and non-heated classes, flagged per class for filtering.</p></div>
@@ -307,7 +370,7 @@
 
 <section id="ledger">
   <div class="wrap">
-    <div class="sec-head"><span class="num">05</span><h2>The core design</h2></div>
+    <div class="sec-head"><span class="num">06</span><h2>The core design</h2></div>
     <p class="intro">Bookings don't subtract from a simple credit count. Every purchase creates <b>entitlements</b>, every booking is checked against <b>eligibility rules</b>, and every change is written to an append-only <b>ledger</b>. Getting this right early keeps every later feature cheap.</p>
     <div class="grid g2">
       <div class="card"><h3>Unlimited membership</h3><p>Valid for the billing period, with optional limits such as one booking per day.</p></div>
@@ -324,7 +387,7 @@
 
 <section id="architecture">
   <div class="wrap">
-    <div class="sec-head"><span class="num">06</span><h2>Architecture</h2></div>
+    <div class="sec-head"><span class="num">07</span><h2>Architecture</h2></div>
     <p class="intro">Everything runs on Cloudflare. A scaffold is already live. Staff tools sit behind Cloudflare Access, and secrets never reach the browser.</p>
     <div class="arch">
       <div class="col">
@@ -360,7 +423,7 @@
 
 <section id="start">
   <div class="wrap">
-    <div class="sec-head"><span class="num">07</span><h2>Start this week</h2></div>
+    <div class="sec-head"><span class="num">08</span><h2>Start this week</h2></div>
     <p class="intro">These approvals take weeks however fast the code moves, so they start now.</p>
     <ul class="checklist">
       <li><b>Twilio text registration (A2P 10DLC).</b> Carrier approval can take 1–3 weeks.</li>
@@ -375,7 +438,7 @@
 
 <section id="timeline">
   <div class="wrap">
-    <div class="sec-head"><span class="num">08</span><h2>Timeline</h2></div>
+    <div class="sec-head"><span class="num">09</span><h2>Timeline</h2></div>
     <div class="timeline">
       <div class="phase card">
         <div class="when">Weeks 1–2</div>
@@ -428,7 +491,7 @@
 
 <section id="costs">
   <div class="wrap">
-    <div class="sec-head"><span class="num">09</span><h2>Costs</h2></div>
+    <div class="sec-head"><span class="num">10</span><h2>Costs</h2></div>
     <p class="intro">Tools only, researched November 2, 2026. Twilio and Stripe Billing figures are estimates to confirm. Development time isn't included.</p>
     <div class="stats" style="grid-template-columns:repeat(3,1fr); margin:0 0 32px">
       <div class="stat"><b>$200–450</b><span>Software per month</span></div>
@@ -462,7 +525,7 @@
 
 <section id="questions">
   <div class="wrap">
-    <div class="sec-head"><span class="num">10</span><h2>Open questions</h2></div>
+    <div class="sec-head"><span class="num">11</span><h2>Open questions</h2></div>
     <h3 style="margin-bottom:16px; color:var(--lavender); text-transform:uppercase; letter-spacing:.08em; font-size:13px">For the studio</h3>
     <ol class="qs">
       <li><b>Opening date.</b> What's the exact date, and when must booking go live? This sets the go/no-go.</li>
@@ -486,7 +549,7 @@
 
 <section id="risks">
   <div class="wrap">
-    <div class="sec-head"><span class="num">11</span><h2>Risks</h2></div>
+    <div class="sec-head"><span class="num">12</span><h2>Risks</h2></div>
     <div class="grid g2">
       <div class="card"><span class="tag risk">Ownership</span><h3>We are the vendor</h3><p>Support, uptime and one person holding the knowledge. Runbooks, tests, a CLAUDE.md and docs so another developer (or Claude) can pick it up, plus monitoring with alerts.</p></div>
       <div class="card"><span class="tag risk">Timeline</span><h3>Opening is this month</h3><p>Opening-ready scope only, go/no-go one week out, and a manual or Arketa month-to-month fallback.</p></div>
