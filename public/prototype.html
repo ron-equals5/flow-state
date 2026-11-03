@@ -1,0 +1,992 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Flow State Studio</title>
+<meta name="description" content="Clickable prototype of the Flow State Studio website and booking experience.">
+<style>
+  :root {
+    --navy: #09003e;
+    --navy-2: #150b55;
+    --navy-3: #241873;
+    --lavender: #9982e3;
+    --lavender-2: #c9bdf3;
+    --lavender-3: #efeafd;
+    --pink: #e64fb9;
+    --flame: #ee2405;
+    --white: #ffffff;
+    --ink: #09003e;
+    --muted: #5b5385;
+    --line: #e3dcf8;
+    --ok: #17a673;
+    --radius: 20px;
+    --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --grad: linear-gradient(90deg, var(--lavender), var(--pink) 55%, var(--flame));
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; font: 17px/1.55 var(--sans); color: var(--ink); background: var(--white); -webkit-font-smoothing: antialiased; }
+  img { max-width: 100%; display: block; }
+  a { color: inherit; }
+  button { font: inherit; cursor: pointer; }
+  input, select, textarea { font: inherit; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+
+  /* Type */
+  .display { font-weight: 800; text-transform: uppercase; letter-spacing: -.035em; line-height: .92; margin: 0; }
+  .xl { font-size: clamp(3rem, 9vw, 7.5rem); }
+  .lg { font-size: clamp(2.4rem, 6vw, 4.6rem); }
+  .md { font-size: clamp(1.8rem, 4vw, 2.8rem); }
+  .grad { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .eyebrow { font-size: 13px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+  .lede { font-size: clamp(1.05rem, 1.7vw, 1.3rem); max-width: 56ch; }
+
+  /* Buttons */
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 999px; padding: 13px 26px;
+    font-weight: 700; font-size: 14px; letter-spacing: .08em; text-transform: uppercase; text-decoration: none; border: 2px solid var(--pink);
+    color: var(--pink); background: transparent; transition: background .15s, color .15s, transform .15s; white-space: nowrap; }
+  .btn:hover { background: var(--pink); color: #fff; }
+  .btn.solid { background: var(--pink); color: #fff; }
+  .btn.solid:hover { background: #d23aa5; border-color: #d23aa5; }
+  .btn.navy { border-color: var(--navy); color: var(--navy); }
+  .btn.navy:hover { background: var(--navy); color: #fff; }
+  .btn.white { border-color: #fff; color: #fff; }
+  .btn.white:hover { background: #fff; color: var(--navy); }
+  .btn.sm { padding: 8px 16px; font-size: 12px; }
+  .btn.block { width: 100%; }
+  .btn[disabled] { opacity: .4; pointer-events: none; }
+  .link { background: none; border: 0; padding: 0; color: var(--pink); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+
+  /* Banner + header */
+  .proto { background: var(--grad); color: #fff; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; text-align: center; padding: 7px 16px; }
+  header.site { position: sticky; top: 0; z-index: 30; background: var(--navy); color: #fff; }
+  header.site .wrap { display: flex; align-items: center; gap: 20px; height: 76px; }
+  .logo img { height: 46px; width: auto; }
+  .logo { display: flex; align-items: center; text-decoration: none; }
+  nav.main { display: flex; gap: 2px; margin-left: auto; }
+  nav.main a { color: #fff; text-decoration: none; font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: 8px 11px; border-radius: 999px; opacity: .85; }
+  nav.main a:hover, nav.main a.on { opacity: 1; background: var(--navy-3); }
+  .hdr-actions { display: flex; align-items: center; gap: 10px; }
+  .acct { color: #fff; text-decoration: none; font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
+  .avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--grad); display: grid; place-items: center; font-weight: 800; font-size: 13px; color: #fff; }
+  .burger { display: none; background: none; border: 0; color: #fff; padding: 8px; margin-left: auto; }
+  .burger span { display: block; width: 24px; height: 2px; background: #fff; margin: 5px 0; }
+
+  /* Sections */
+  .sec { padding: 96px 0; }
+  .navy-bg { background: var(--navy); color: #fff; }
+  .lav-bg { background: var(--lavender); color: var(--navy); }
+  .soft-bg { background: var(--lavender-3); }
+  .wave { display: block; width: 100%; height: auto; }
+  .page-head { background: var(--navy); color: #fff; padding: 64px 0 40px; }
+  .page-head p { color: var(--lavender-2); margin: 16px 0 0; }
+  .crumb { color: var(--lavender-2); font-size: 13px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; text-decoration: none; display: inline-block; margin-bottom: 16px; }
+
+  /* Hero */
+  .hero { display: grid; grid-template-columns: .9fr 1.1fr; gap: 56px; align-items: center; padding: 56px 0 72px; }
+  .hero-img, .feature-img { border-radius: 4px; overflow: hidden; aspect-ratio: 9/16; height: min(640px, 78vh); width: auto; justify-self: center; background: var(--navy-2); }
+  .hero-img img { width: 100%; height: 100%; object-fit: cover; }
+  .hero .lede { color: var(--lavender-2); margin: 24px 0 32px; }
+  .hero-ctas { display: flex; flex-wrap: wrap; gap: 12px; }
+  .marquee { overflow: hidden; border-top: 1px solid rgba(255,255,255,.12); border-bottom: 1px solid rgba(255,255,255,.12); padding: 18px 0; white-space: nowrap; }
+  .marquee div { display: inline-block; animation: scroll 40s linear infinite; font-weight: 800; text-transform: uppercase; letter-spacing: .02em; font-size: 22px; }
+  .marquee span { margin: 0 18px; }
+  .marquee i { font-style: normal; color: var(--pink); }
+  @keyframes scroll { to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) { .marquee div { animation: none; } }
+
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+  
+  .feature-img img { width: 100%; height: 100%; object-fit: cover; }
+  .stack > * + * { margin-top: 20px; }
+  .facts { display: flex; flex-wrap: wrap; gap: 10px; }
+  .fact { border: 2px solid currentColor; border-radius: 999px; padding: 6px 14px; font-size: 13px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+
+  /* Cards */
+  .grid { display: grid; gap: 20px; }
+  .g2 { grid-template-columns: repeat(2, 1fr); }
+  .g3 { grid-template-columns: repeat(3, 1fr); }
+  .g4 { grid-template-columns: repeat(4, 1fr); }
+  .card { background: #fff; border: 1.5px solid var(--line); border-radius: var(--radius); padding: 24px; }
+  .card h3 { margin: 0 0 6px; font-size: 1.15rem; text-transform: uppercase; letter-spacing: -.01em; font-weight: 800; }
+  .card p { margin: 0; color: var(--muted); font-size: 15px; }
+  .card.clickable { cursor: pointer; transition: transform .15s, border-color .15s, box-shadow .15s; text-decoration: none; display: block; }
+  .card.clickable:hover { transform: translateY(-3px); border-color: var(--lavender); box-shadow: 0 12px 30px rgba(9,0,62,.08); }
+  .tile { border-radius: var(--radius); padding: 24px; min-height: 170px; color: #fff; display: flex; flex-direction: column; justify-content: flex-end; text-decoration: none; transition: transform .15s; }
+  .tile:hover { transform: translateY(-3px); }
+  .tile b { font-size: 1.5rem; text-transform: uppercase; letter-spacing: -.02em; line-height: 1; }
+  .tile span { font-size: 13px; opacity: .85; margin-top: 6px; }
+  .pill { display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; padding: 4px 10px; border-radius: 999px; background: var(--lavender-3); color: var(--navy); }
+  .pill.hot { background: linear-gradient(90deg, var(--pink), var(--flame)); color: #fff; }
+  .pill.lock { background: var(--navy); color: #fff; }
+  .pill.ok { background: #dff5ec; color: var(--ok); }
+  .pill.warn { background: #ffe6e1; color: #c21d03; }
+  .pills { display: flex; flex-wrap: wrap; gap: 6px; }
+
+  /* Schedule */
+  .days { display: flex; gap: 8px; overflow-x: auto; padding: 4px 0 8px; scrollbar-width: none; }
+  .days::-webkit-scrollbar { display: none; }
+  a.day { text-decoration: none; color: var(--ink); }
+  .day { flex: 0 0 auto; min-width: 74px; border: 1.5px solid var(--line); background: #fff; border-radius: 16px; padding: 10px 12px; text-align: center; }
+  .day small { display: block; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+  .day b { font-size: 22px; }
+  .day.on { background: var(--navy); border-color: var(--navy); color: #fff; }
+  .day.on small { color: var(--lavender-2); }
+  .filters { display: grid; grid-template-columns: repeat(4, 1fr) auto; gap: 12px; margin: 20px 0 8px; align-items: end; }
+  .field label { display: block; font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .field select, .field input, .field textarea { width: 100%; border: 1.5px solid var(--line); border-radius: 12px; padding: 11px 12px; background: #fff; color: var(--ink); }
+  .field select:focus, .field input:focus, .field textarea:focus { outline: 2px solid var(--lavender); border-color: var(--lavender); }
+  .rows { margin-top: 16px; border-top: 1.5px solid var(--line); }
+  .row { display: grid; grid-template-columns: 110px 1fr auto; gap: 20px; align-items: center; padding: 20px 4px; border-bottom: 1.5px solid var(--line); }
+  .row .time b { display: block; font-size: 1.15rem; }
+  .row .time small { color: var(--muted); font-size: 13px; }
+  .row h3 { margin: 0 0 4px; font-size: 1.15rem; text-transform: uppercase; letter-spacing: -.01em; }
+  .row h3 button { background: none; border: 0; padding: 0; font: inherit; color: inherit; text-transform: inherit; text-align: left; }
+  .row h3 button:hover { color: var(--pink); }
+  .row .meta { color: var(--muted); font-size: 14px; margin-bottom: 6px; }
+  .row .act { text-align: right; }
+  .row .act small { display: block; color: var(--muted); font-size: 12px; margin-top: 6px; }
+  .row.flow { background: linear-gradient(90deg, rgba(153,130,227,.14), transparent 70%); }
+  .empty { padding: 48px 0; text-align: center; color: var(--muted); }
+
+  /* Flow + Reset pickers */
+  .step-label { display: flex; align-items: center; gap: 12px; margin: 36px 0 16px; }
+  .step-label b { width: 32px; height: 32px; border-radius: 50%; background: var(--navy); color: #fff; display: grid; place-items: center; font-size: 14px; }
+  .step-label h2 { margin: 0; font-size: 1.3rem; text-transform: uppercase; letter-spacing: -.01em; }
+  .blocks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .block { text-align: left; border: 2px solid var(--line); background: #fff; border-radius: var(--radius); padding: 20px; color: var(--ink); }
+  .block:hover { border-color: var(--lavender); }
+  .block.on { border-color: var(--pink); background: #fff3fb; }
+  .block.locked { background: var(--lavender-3); }
+  .block b { display: block; font-size: 1.1rem; text-transform: uppercase; }
+  .block span { color: var(--muted); font-size: 14px; }
+  .slots { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 10px; }
+  .slot { border: 2px solid var(--line); background: #fff; border-radius: 14px; padding: 12px 10px; text-align: center; color: var(--ink); }
+  .slot b { display: block; font-size: 1.05rem; }
+  .slot small { color: var(--muted); font-size: 12px; }
+  .slot:hover { border-color: var(--lavender); }
+  .slot.on { border-color: var(--pink); background: var(--pink); color: #fff; }
+  .slot.on small { color: #fff; }
+  .slot[disabled] { opacity: .45; cursor: not-allowed; text-decoration: line-through; }
+  .summary { position: sticky; bottom: 16px; margin-top: 28px; background: var(--navy); color: #fff; border-radius: var(--radius); padding: 18px 22px; display: flex; align-items: center; gap: 16px; justify-content: space-between; flex-wrap: wrap; box-shadow: 0 16px 40px rgba(9,0,62,.25); }
+  .summary small { color: var(--lavender-2); display: block; font-size: 13px; }
+  .choice { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .choice button { text-align: left; border: 2px solid var(--line); background: #fff; border-radius: 16px; padding: 16px; color: var(--ink); }
+  .choice button b { display: block; text-transform: uppercase; font-size: 15px; }
+  .choice button span { color: var(--muted); font-size: 13px; }
+  .choice button.on { border-color: var(--pink); background: #fff3fb; }
+  .guest-box { margin-top: 16px; }
+
+  /* Pricing */
+  .price { font-size: 2.6rem; font-weight: 800; letter-spacing: -.03em; line-height: 1; margin: 12px 0 4px; }
+  .price small { font-size: 1rem; font-weight: 600; color: var(--muted); letter-spacing: 0; }
+  .card.feature { background: var(--navy); color: #fff; border-color: var(--navy); }
+  .card.feature p, .card.feature .price small { color: var(--lavender-2); }
+  .card ul.ticks { list-style: none; padding: 0; margin: 16px 0 20px; font-size: 15px; }
+  .card ul.ticks li { padding-left: 24px; position: relative; margin: 6px 0; }
+  .card ul.ticks li::before { content: "✓"; position: absolute; left: 0; color: var(--pink); font-weight: 800; }
+  .price-card { display: flex; flex-direction: column; }
+  .price-card .btn { margin-top: auto; }
+
+  /* Instructor */
+  .face { aspect-ratio: 1; border-radius: 16px; background: var(--grad); display: grid; place-items: center; color: #fff; font-weight: 800; font-size: 2.6rem; letter-spacing: -.03em; margin-bottom: 16px; }
+
+  /* Account */
+  .acct-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 24px; align-items: start; }
+  .bk { display: flex; justify-content: space-between; gap: 12px; padding: 16px 0; border-bottom: 1.5px solid var(--line); align-items: center; }
+  .bk:last-child { border-bottom: 0; }
+  .bk b { text-transform: uppercase; }
+  .bk small { color: var(--muted); display: block; font-size: 14px; }
+  .stat-big { font-size: 2.4rem; font-weight: 800; line-height: 1; letter-spacing: -.03em; }
+
+  /* Modal */
+  .overlay { position: fixed; inset: 0; background: rgba(9,0,62,.55); backdrop-filter: blur(4px); z-index: 50; display: grid; place-items: center; padding: 16px; animation: fade .15s; }
+  .modal { background: #fff; border-radius: 24px; width: min(520px, 100%); max-height: calc(100vh - 32px); overflow: auto; padding: 32px; position: relative; animation: up .2s; }
+  .modal h2 { margin: 0 0 8px; font-size: 1.7rem; text-transform: uppercase; letter-spacing: -.025em; line-height: 1; }
+  .modal p { color: var(--muted); margin: 0 0 18px; }
+  .modal .x { position: absolute; top: 16px; right: 16px; width: 36px; height: 36px; border-radius: 50%; border: 0; background: var(--lavender-3); font-size: 18px; color: var(--navy); }
+  .modal .steps { display: flex; gap: 6px; margin-bottom: 20px; }
+  .modal .steps i { flex: 1; height: 4px; border-radius: 4px; background: var(--line); }
+  .modal .steps i.on { background: var(--pink); }
+  .opt { display: flex; justify-content: space-between; align-items: center; gap: 12px; width: 100%; text-align: left; border: 2px solid var(--line); background: #fff; border-radius: 16px; padding: 16px 18px; margin-bottom: 10px; color: var(--ink); }
+  .opt:hover { border-color: var(--pink); }
+  .opt b { display: block; text-transform: uppercase; font-size: 15px; }
+  .opt span { color: var(--muted); font-size: 13px; }
+  .opt em { font-style: normal; font-weight: 800; white-space: nowrap; }
+  .waiver { max-height: 160px; overflow: auto; background: var(--lavender-3); border-radius: 12px; padding: 14px 16px; font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+  .check { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; margin: 12px 0; }
+  .check input { margin-top: 4px; accent-color: var(--pink); }
+  .ticket { background: var(--navy); color: #fff; border-radius: 18px; padding: 20px; margin-bottom: 18px; }
+  .ticket small { color: var(--lavender-2); display: block; font-size: 13px; }
+  .ticket b { font-size: 1.3rem; text-transform: uppercase; display: block; letter-spacing: -.01em; }
+  .big-check { width: 64px; height: 64px; border-radius: 50%; background: var(--grad); display: grid; place-items: center; color: #fff; font-size: 30px; font-weight: 800; margin-bottom: 18px; }
+  .row-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+  @keyframes fade { from { opacity: 0; } }
+  @keyframes up { from { transform: translateY(16px); opacity: 0; } }
+
+  .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: var(--navy); color: #fff; padding: 12px 20px; border-radius: 999px; font-size: 14px; font-weight: 700; z-index: 60; box-shadow: 0 10px 30px rgba(9,0,62,.3); animation: up .2s; max-width: calc(100% - 32px); text-align: center; }
+
+  footer.site { background: var(--navy); color: #fff; padding: 72px 0 40px; }
+  footer.site .cols { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 40px; }
+  footer.site a { color: var(--lavender-2); text-decoration: none; display: block; margin: 6px 0; }
+  footer.site a:hover { color: #fff; }
+  footer.site .fine { margin-top: 56px; color: var(--lavender-2); font-size: 13px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+
+  @media (max-width: 1000px) {
+    nav.main { display: none; position: absolute; top: 76px; left: 0; right: 0; background: var(--navy); flex-direction: column; padding: 8px 16px 20px; border-top: 1px solid var(--navy-3); }
+    nav.main.open { display: flex; }
+    nav.main a { padding: 14px 12px; font-size: 15px; }
+    .burger { display: block; }
+    nav.main { margin-left: 0; }
+    .hdr-actions { margin-left: 0; }
+    .filters { grid-template-columns: 1fr 1fr; }
+    .g4 { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 760px) {
+    .wrap { padding: 0 16px; }
+    .sec { padding: 64px 0; }
+    .hero, .two, .acct-grid { grid-template-columns: 1fr; gap: 32px; }
+    .hero-img, .feature-img { height: auto; width: min(100%, 340px); }
+    .g2, .g3, .blocks, .choice { grid-template-columns: 1fr; }
+    .row { grid-template-columns: 76px 1fr; }
+    .row .act { grid-column: 1 / -1; text-align: left; display: flex; align-items: center; gap: 12px; }
+    .row .act small { margin: 0; }
+    .filters { grid-template-columns: 1fr 1fr; }
+    footer.site .cols { grid-template-columns: 1fr; }
+    .modal { padding: 24px 20px; }
+    .logo img { height: 38px; }
+    .hdr-actions .btn { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="proto">Clickable prototype · sample classes, people &amp; prices · nothing is charged or sent</div>
+<header class="site">
+  <div class="wrap">
+    <a class="logo" href="#/" aria-label="Flow State Studio home"><img src="https://images.squarespace-cdn.com/content/v1/69be9a22469b1f36ae0d9b42/f18bc53b-0a2f-41d2-a899-3dd8fafbd068/FLOWSTATE_STUDIO_Logo_WHITE.png?format=500w" alt="Flow State Studio"></a>
+    <nav class="main" id="nav">
+      <a href="#/schedule">Schedule</a>
+      <a href="#/flow">The Flow</a>
+      <a href="#/reset">Reset Room</a>
+      <a href="#/classes">Classes</a>
+      <a href="#/instructors">Instructors</a>
+      <a href="#/events">Events</a>
+      <a href="#/pricing">Pricing</a>
+    </nav>
+    <div class="hdr-actions" id="hdr-actions"></div>
+    <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<main id="app"></main>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <img src="https://images.squarespace-cdn.com/content/v1/69be9a22469b1f36ae0d9b42/f18bc53b-0a2f-41d2-a899-3dd8fafbd068/FLOWSTATE_STUDIO_Logo_WHITE.png?format=500w" alt="Flow State Studio" style="height:56px;width:auto;margin-bottom:20px">
+        <div style="color:var(--lavender-2)">614 Pompton Ave.<br>Cedar Grove, New Jersey</div>
+      </div>
+      <div>
+        <div class="eyebrow" style="color:var(--pink);margin-bottom:10px">Move</div>
+        <a href="#/schedule">Schedule</a><a href="#/flow">The Flow</a><a href="#/reset">Reset Room</a><a href="#/events">Events &amp; Series</a>
+      </div>
+      <div>
+        <div class="eyebrow" style="color:var(--pink);margin-bottom:10px">Studio</div>
+        <a href="#/classes">Classes</a><a href="#/instructors">Instructors</a><a href="#/pricing">Pricing</a><a href="#/account">My account</a>
+      </div>
+    </div>
+    <div class="fine"><span>Opening November 2026 · Cedar Grove, NJ</span><span>Prototype by EQ5 · Flow State Studio</span></div>
+  </div>
+</footer>
+
+<script>
+// ───────── Sample data ─────────
+const IMG = {
+  hero: "https://images.squarespace-cdn.com/content/v1/69be9a22469b1f36ae0d9b42/0958e5ff-b7c2-4eb7-8e7d-4b92526ff290/Web+_Rachel+Move_Text+Overlay_MFW+15%25.jpg?format=1000w",
+  studio: "https://images.squarespace-cdn.com/content/v1/69be9a22469b1f36ae0d9b42/6b64183e-23dd-4b19-809b-4d42e26ca5ed/Web_Sky+Stuio_Heated+Overlay_15%25.jpg?format=1000w",
+};
+
+const TYPES = [
+  { name: "Sculpt", blurb: "Low-impact, high-burn strength to a beat.", g: ["#e64fb9", "#ee2405"] },
+  { name: "Barre", blurb: "Small moves, big shake. Ballet-inspired strength.", g: ["#9982e3", "#e64fb9"] },
+  { name: "Strength", blurb: "Weights, form and progressive power.", g: ["#09003e", "#9982e3"] },
+  { name: "Mat Pilates", blurb: "Core-first control, length and alignment.", g: ["#9982e3", "#241873"] },
+  { name: "Yoga", blurb: "From heated vinyasa to slow, sound-led stillness.", g: ["#ee2405", "#e64fb9"] },
+  { name: "Mobility", blurb: "Open up, move better, recover faster.", g: ["#241873", "#e64fb9"] },
+  { name: "Cardio", blurb: "Beat-driven intervals that get you electric.", g: ["#ee2405", "#9982e3"] },
+  { name: "Dance", blurb: "No experience needed. Just rhythm and joy.", g: ["#e64fb9", "#9982e3"] },
+  { name: "Pre/Post-Natal", blurb: "Safe, strong movement for every life stage.", g: ["#9982e3", "#c9bdf3"] },
+  { name: "Sound Healing", blurb: "Sound-led stillness to quiet the noise.", g: ["#09003e", "#241873"] },
+];
+
+const CLASSES = [
+  { id: "hot-sculpt", name: "Hot Sculpt", type: "Sculpt", heated: true, mins: 50, level: "All levels", desc: "Light weights, big playlists and infrared heat. Grounded to electric and back again." },
+  { id: "sculpt-45", name: "Sculpt 45", type: "Sculpt", heated: false, mins: 45, level: "All levels", desc: "Full-body toning in 45 beat-matched minutes." },
+  { id: "barre-burn", name: "Barre Burn", type: "Barre", heated: false, mins: 50, level: "All levels", desc: "Isometric holds and pulses that light up every muscle." },
+  { id: "hot-barre", name: "Infrared Barre", type: "Barre", heated: true, mins: 50, level: "Intermediate", desc: "Classic barre, turned up with infrared heat." },
+  { id: "strength-lab", name: "Strength Lab", type: "Strength", heated: false, mins: 45, level: "All levels", desc: "Compound lifts, smart progressions, real results." },
+  { id: "mat-core", name: "Mat Pilates Core", type: "Mat Pilates", heated: false, mins: 50, level: "All levels", desc: "Classical mat work focused on the deep core." },
+  { id: "hot-pilates", name: "Infrared Mat Pilates", type: "Mat Pilates", heated: true, mins: 50, level: "Intermediate", desc: "Mat Pilates in the heated studio for deeper release." },
+  { id: "hot-vinyasa", name: "Hot Vinyasa", type: "Yoga", heated: true, mins: 60, level: "All levels", desc: "Breath-linked flow under the skylight, in infrared heat." },
+  { id: "slow-flow", name: "Slow Flow & Restore", type: "Yoga", heated: false, mins: 60, level: "Beginner friendly", desc: "Unhurried flow and long holds to reset the nervous system." },
+  { id: "mobility-reset", name: "Mobility Reset", type: "Mobility", heated: false, mins: 45, level: "All levels", desc: "Joint-by-joint mobility to move better everywhere else." },
+  { id: "cardio-rhythm", name: "Cardio Rhythm", type: "Cardio", heated: false, mins: 45, level: "All levels", desc: "Intervals built on the beat. Low-impact options always." },
+  { id: "dance-party", name: "Dance Party", type: "Dance", heated: false, mins: 50, level: "All levels", desc: "Choreo-lite cardio that feels like a night out." },
+  { id: "prenatal", name: "Prenatal Flow", type: "Pre/Post-Natal", heated: false, mins: 50, level: "Pregnancy safe", desc: "Strength, breath and mobility through every trimester." },
+  { id: "postnatal", name: "Postnatal Strength", type: "Pre/Post-Natal", heated: false, mins: 45, level: "Postpartum", desc: "Rebuild the core and pelvic floor, babies welcome." },
+  { id: "sound-bath", name: "Sound Bath", type: "Sound Healing", heated: false, mins: 60, level: "All levels", desc: "Lie back as bowls and gongs carry you into stillness." },
+];
+
+const INSTRUCTORS = [
+  { id: "rachel", name: "Rachel", role: "Founder", teaches: ["Sculpt", "Dance", "Cardio"], bio: "Rachel built Flow State around one idea: when you move with enough rhythm and joy, the mental load lifts. Her classes are loud, joyful and sneakily hard." },
+  { id: "jess", name: "Jess", role: "Yoga & Sound", teaches: ["Yoga", "Sound Healing", "Mobility"], bio: "A 500-hour yoga teacher and sound practitioner who brings stillness to the heated studio." },
+  { id: "nina", name: "Nina", role: "Pilates & Pre/Post-Natal", teaches: ["Mat Pilates", "Barre", "Pre/Post-Natal"], bio: "Classically trained in Pilates with a specialty in pregnancy and postpartum strength." },
+  { id: "chris", name: "Chris", role: "Strength", teaches: ["Strength", "Cardio", "Sculpt"], bio: "Strength coach who makes progressive lifting feel approachable and fun." },
+  { id: "ava", name: "Ava", role: "Barre & Yoga", teaches: ["Barre", "Yoga", "Mat Pilates"], bio: "Former dancer who teaches barre with precision and a great playlist." },
+  { id: "leo", name: "Leo", role: "Mobility & Sound", teaches: ["Mobility", "Sound Healing", "Yoga"], bio: "Movement therapist focused on recovery, mobility and nervous-system reset." },
+];
+
+const PRODUCTS = {
+  intro: { id: "intro", name: "Intro: 2 Weeks Unlimited", price: 59, kind: "unlimited", days: 14, note: "New clients only" },
+  founding: { id: "founding", name: "Founding Unlimited", price: 179, kind: "unlimited", monthly: true, note: "Locked-in rate for founding members" },
+  unlimited: { id: "unlimited", name: "Unlimited", price: 209, kind: "unlimited", monthly: true },
+  eight: { id: "eight", name: "8 Classes / Month", price: 159, kind: "credits", credits: 8, monthly: true },
+  four: { id: "four", name: "4 Classes / Month", price: 89, kind: "credits", credits: 4, monthly: true },
+  single: { id: "single", name: "Single Class", price: 32, kind: "credits", credits: 1, note: "Expires in 30 days" },
+  five: { id: "five", name: "5-Class Pack", price: 150, kind: "credits", credits: 5, note: "Expires in 3 months" },
+  ten: { id: "ten", name: "10-Class Pack", price: 280, kind: "credits", credits: 10, note: "Expires in 6 months" },
+  reset1: { id: "reset1", name: "Reset Room Session", price: 35, kind: "reset", credits: 1 },
+  reset4: { id: "reset4", name: "Reset Room 4-Pack", price: 120, kind: "reset", credits: 4 },
+};
+
+const EVENTS = [
+  { id: "full-moon", kind: "event", name: "Full Moon Sound Bath", type: "Pop-up", dayOffset: 3, time: "20:00", mins: 75, price: 40, place: "2nd Floor", desc: "Candlelight, crystal bowls and a guided intention-setting under the skylight." },
+  { id: "founders-night", kind: "event", name: "Founders Night Dance Party", type: "Pop-up", dayOffset: 5, time: "19:00", mins: 90, price: 25, place: "1st Floor", desc: "Celebrate opening week with a DJ, a dance-cardio throwdown and mocktails." },
+  { id: "pilates-found", kind: "series", name: "Pilates Foundations", type: "4-week series", dayOffset: 2, time: "10:00", mins: 60, price: 140, sessions: 4, place: "2nd Floor", desc: "Four weekly sessions to master the fundamentals of mat Pilates with Nina." },
+  { id: "prenatal-series", kind: "series", name: "Strong Through Pregnancy", type: "6-week series", dayOffset: 4, time: "11:00", mins: 50, price: 195, sessions: 6, place: "1st Floor", desc: "A six-week small-group series for expecting clients, every trimester welcome." },
+];
+
+const MEMBERS = [
+  { name: "Sam Patel", email: "sam@example.com" },
+  { name: "Alex Rivera", email: "alex@example.com" },
+  { name: "Taylor Brooks", email: "taylor@example.com" },
+];
+
+// ───────── Helpers ─────────
+const $ = (s, el = document) => el.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const hash = s => { let x = 7; for (const c of s) x = (x * 31 + c.charCodeAt(0)) | 0; return Math.abs(x); };
+const pad = n => String(n).padStart(2, "0");
+const dayKey = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const fromKey = k => { const [y, m, d] = k.split("-").map(Number); return new Date(y, m - 1, d); };
+const at = (key, hhmm) => { const d = fromKey(key); const [h, m] = hhmm.split(":").map(Number); d.setHours(h, m, 0, 0); return d; };
+const fmtTime = d => d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+const fmtDay = d => d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+const fmtLong = d => d.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+const addMin = (d, m) => new Date(d.getTime() + m * 60000);
+const money = n => "$" + n.toLocaleString();
+const typeOf = name => TYPES.find(t => t.name === name);
+const classById = id => CLASSES.find(c => c.id === id);
+const instById = id => INSTRUCTORS.find(i => i.id === id);
+const slug = s => s.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+
+const DAYS = (() => { const out = []; const t = new Date(); t.setHours(0, 0, 0, 0); for (let i = 0; i < 7; i++) { const d = new Date(t); d.setDate(t.getDate() + i); out.push(dayKey(d)); } return out; })();
+const TIMES = ["06:00", "07:15", "09:15", "12:00", "17:30", "18:45", "20:00"];
+
+function schedule(key) {
+  const di = DAYS.indexOf(key) >= 0 ? DAYS.indexOf(key) : 0;
+  const dow = fromKey(key).getDay();
+  return TIMES.map((t, i) => {
+    const c = CLASSES[(di * 5 + i * 3 + dow) % CLASSES.length];
+    const teachers = INSTRUCTORS.filter(x => x.teaches.includes(c.type));
+    const inst = teachers[(di + i) % teachers.length];
+    const id = `${key}-${t}-${c.id}`;
+    const cap = c.heated ? 24 : 20;
+    const h = hash(id);
+    const taken = h % 9 === 0 ? cap : Math.min(cap - 1, 6 + (h % (cap - 4)));
+    const floor = c.heated || ["Yoga", "Mat Pilates", "Mobility", "Sound Healing", "Pre/Post-Natal"].includes(c.type) ? "2nd Floor" : "1st Floor";
+    return { id, kind: "class", cls: c, inst, start: at(key, t), floor, cap, taken: taken + (state.bookings.filter(b => b.ref === id && b.status === "booked").length) };
+  });
+}
+
+function flowBlocks(key) {
+  const dow = fromKey(key).getDay();
+  const restricted = dow === 2 || dow === 4;
+  return [
+    { id: `${key}-am`, name: restricted ? "Members' Flow" : "Morning Flow", start: "10:30", end: "12:00", restricted },
+    { id: `${key}-mid`, name: "Midday Flow", start: "13:00", end: "16:45", restricted: false },
+    { id: `${key}-eve`, name: "Evening Flow", start: "20:30", end: "22:00", restricted: false },
+  ];
+}
+function flowSlots(key, block) {
+  const out = []; let s = at(key, block.start); const last = addMin(at(key, block.end), -45);
+  while (s <= last) {
+    const id = `${block.id}-${fmtTime(s)}`; const h = hash(id);
+    const taken = h % 6 === 0 ? 6 : h % 5 + state.bookings.filter(b => b.ref === id && b.status === "booked").length;
+    out.push({ id, start: new Date(s), cap: 6, taken: Math.min(6, taken) });
+    s = addMin(s, 15);
+  }
+  return out;
+}
+function resetSlots(key) {
+  const out = [];
+  for (let h = 7; h <= 20; h++) {
+    const t = `${pad(h)}:00`; const id = `${key}-reset-${t}`;
+    const taken = hash(id) % 4 === 0 || state.bookings.some(b => b.ref === id && b.status === "booked");
+    out.push({ id, start: at(key, t), taken });
+  }
+  return out;
+}
+function eventDate(e) { const d = fromKey(DAYS[Math.min(e.dayOffset, 6)]); const [h, m] = e.time.split(":").map(Number); d.setHours(h, m, 0, 0); return d; }
+
+// ───────── State ─────────
+const state = { user: null, waiver: false, plan: null, credits: 0, resetCredits: 0, guestPasses: 1, bookings: [], orders: [] };
+const now = () => new Date();
+const hasMembership = () => state.plan && state.plan.kind === "unlimited";
+
+function toast(msg) {
+  document.querySelectorAll(".toast").forEach(t => t.remove());
+  const t = document.createElement("div"); t.className = "toast"; t.textContent = msg; document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2600);
+}
+
+// ───────── Modal & flows ─────────
+let flow = null;
+function openModal(html) {
+  closeModal();
+  const o = document.createElement("div"); o.className = "overlay"; o.id = "overlay";
+  o.innerHTML = `<div class="modal" role="dialog" aria-modal="true"><button class="x" aria-label="Close" data-close>×</button>${html}</div>`;
+  o.addEventListener("click", e => { if (e.target === o || e.target.closest("[data-close]")) closeModal(); });
+  document.body.appendChild(o); document.body.style.overflow = "hidden";
+  const f = o.querySelector("input, select"); if (f) setTimeout(() => f.focus(), 50);
+}
+function closeModal() { const o = $("#overlay"); if (o) o.remove(); document.body.style.overflow = ""; }
+function setModal(html) { const m = $("#overlay .modal"); if (!m) return openModal(html); m.innerHTML = `<button class="x" aria-label="Close" data-close>×</button>${html}`; m.scrollTop = 0; const f = m.querySelector("input, select"); if (f) setTimeout(() => f.focus(), 50); }
+const steps = (n, of) => `<div class="steps">${Array.from({ length: of }, (_, i) => `<i class="${i < n ? "on" : ""}"></i>`).join("")}</div>`;
+
+function ticket(item) {
+  return `<div class="ticket"><small>${esc(item.label || "")}</small><b>${esc(item.title)}</b><small>${fmtLong(item.start)} · ${fmtTime(item.start)}${item.mins ? ` · ${item.mins} min` : ""}${item.place ? ` · ${esc(item.place)}` : ""}</small>${item.guest ? `<small style="margin-top:6px">+ Guest: ${esc(item.guest.name)}</small>` : ""}</div>`;
+}
+
+// Generic: sign in → waiver → pay → done
+function begin(item) { flow = item; next(); }
+function next() {
+  const item = flow;
+  if (!state.user) return signIn(() => next());
+  if (!state.waiver && item.needsWaiver !== false) return waiver(() => next());
+  if (item.waitlist) return confirmWaitlist(item);
+  pay(item);
+}
+
+function signIn(after, opened) {
+  const html = `${steps(1, 4)}<h2>Sign in</h2><p>No passwords. We'll email you a secure sign-in link.</p>
+    <div class="field"><label for="em">Email</label><input id="em" type="email" placeholder="you@example.com" value="jordan@example.com"></div>
+    <div style="height:14px"></div>
+    <button class="btn solid block" id="send">Email me a sign-in link</button>
+    <div style="height:10px"></div>
+    <button class="btn navy block" id="pk">Use a passkey</button>
+    <p style="margin:16px 0 0;font-size:13px">New to Flow State? The same link creates your account.</p>`;
+  opened ? setModal(html) : ($("#overlay") ? setModal(html) : openModal(html));
+  const done = () => { state.user = { name: "Jordan Lee", email: $("#em") ? $("#em").value : "jordan@example.com" }; renderHeader(); after(); };
+  $("#send").onclick = () => {
+    const email = $("#em").value || "you@example.com";
+    setModal(`${steps(1, 4)}<h2>Check your email</h2><p>We sent a sign-in link to <b>${esc(email)}</b>. It works for 15 minutes.</p>
+      <button class="btn solid block" id="open">Open the link (demo)</button>`);
+    $("#open").onclick = () => { state.user = { name: "Jordan Lee", email }; renderHeader(); toast("Welcome, Jordan"); after(); };
+  };
+  $("#pk").onclick = () => { done(); toast("Signed in with passkey"); };
+}
+
+function waiver(after) {
+  setModal(`${steps(2, 4)}<h2>Sign your waiver</h2><p>One time only. It's stored securely with your account.</p>
+    <div class="waiver"><b>Sample liability waiver (placeholder text, pending legal review).</b><br><br>I understand that physical exercise, including infrared-heated classes and Reset Room equipment (red light, compression, heat, vibration and sound), involves risk of injury. I confirm I am in good health or have consulted a physician, will hydrate and work within my limits, and will tell my instructor about injuries or pregnancy. I release Flow State Studio, its owners and staff from liability for injury arising from my participation, except in cases of gross negligence…</div>
+    <div class="field"><label for="sig">Type your full name to sign</label><input id="sig" value="${esc(state.user.name)}"></div>
+    <label class="check"><input type="checkbox" id="agree"> I have read and agree to the waiver.</label>
+    <button class="btn solid block" id="sign" disabled>Sign waiver</button>`);
+  $("#agree").onchange = e => { $("#sign").disabled = !e.target.checked || !$("#sig").value.trim(); };
+  $("#sig").oninput = () => { $("#sign").disabled = !$("#agree").checked || !$("#sig").value.trim(); };
+  $("#sign").onclick = () => { state.waiver = { name: $("#sig").value, at: new Date() }; toast("Waiver signed"); after(); };
+}
+
+function pay(item) {
+  let opts = "";
+  if (item.kind === "event" || item.kind === "series") {
+    opts = `<p>Pop-ups, events and series are priced on their own. Membership credits don't apply.</p>
+      <button class="opt" data-pay="card"><div><b>Pay ${money(item.price)}</b><span>${item.kind === "series" ? `Reserves all ${item.sessions} sessions` : "One ticket"}</span></div><em>Apple Pay / Card</em></button>`;
+  } else if (item.kind === "reset") {
+    if (state.resetCredits > 0) opts += `<button class="opt" data-pay="reset-credit"><div><b>Use a Reset Room credit</b><span>${state.resetCredits} left</span></div><em>Free</em></button>`;
+    if (hasMembership()) opts += `<button class="opt" data-pay="member-rate"><div><b>Member rate</b><span>Members save on Reset Room sessions</span></div><em>${money(25)}</em></button>`;
+    opts += `<button class="opt" data-pay="card"><div><b>Single session</b><span>${item.guest ? (item.guest.kind === "guest" ? "Your guest uses their free first-visit guest pass" : "Your guest uses their own membership or credit") : "Solo session"}</span></div><em>${money(35)}</em></button>`;
+  } else {
+    if (hasMembership()) opts += `<button class="opt" data-pay="membership"><div><b>Use ${esc(state.plan.name)}</b><span>Included in your membership</span></div><em>Included</em></button>`;
+    if (state.credits > 0) opts += `<button class="opt" data-pay="credit"><div><b>Use 1 class credit</b><span>${state.credits} left</span></div><em>1 credit</em></button>`;
+    if (item.restricted && !hasMembership()) {
+      opts = `<p><span class="pill lock">Members only</span></p><p>This Flow block is reserved for members. Start a membership to book it.</p>
+        <a class="btn solid block" href="#/pricing" data-close>See memberships</a>`;
+    } else if (!hasMembership()) {
+      opts += `<button class="opt" data-pay="card"><div><b>Drop in</b><span>Single class, paid now</span></div><em>${money(32)}</em></button>
+        <button class="opt" data-pay="intro"><div><b>Intro: 2 Weeks Unlimited</b><span>Best for first-timers · books this class too</span></div><em>${money(59)}</em></button>`;
+    }
+  }
+  setModal(`${steps(3, 4)}<h2>${item.kind === "series" ? "Join the series" : item.kind === "event" ? "Get your ticket" : "Confirm booking"}</h2>${ticket(item)}${opts}
+    <p style="font-size:12px;margin-top:14px">Cancel up to 12 hours before to keep your credit. Late cancels and no-shows use the credit.</p>`);
+  document.querySelectorAll("[data-pay]").forEach(b => b.onclick = () => {
+    const how = b.dataset.pay;
+    if (how === "credit") state.credits--;
+    if (how === "reset-credit") state.resetCredits--;
+    if (how === "intro") { state.plan = { ...PRODUCTS.intro }; state.orders.push({ name: PRODUCTS.intro.name, price: 59, at: new Date() }); }
+    if (how === "card" || how === "member-rate") state.orders.push({ name: item.title, price: how === "member-rate" ? 25 : (item.price || (item.kind === "reset" ? 35 : 32)), at: new Date() });
+    if (item.guest && item.guest.kind === "guest") state.guestPasses = Math.max(0, state.guestPasses - 1);
+    confirm(item, how);
+  });
+}
+
+function confirm(item, how) {
+  const n = item.kind === "series" ? item.sessions : 1;
+  for (let i = 0; i < n; i++) {
+    state.bookings.push({ id: Math.random().toString(36).slice(2), ref: item.ref, kind: item.kind, title: item.title + (n > 1 ? ` · Session ${i + 1} of ${n}` : ""), start: addMin(item.start, i * 7 * 24 * 60), mins: item.mins, place: item.place, guest: item.guest, status: "booked", paidWith: how });
+  }
+  setModal(`${steps(4, 4)}<div class="big-check">✓</div><h2>${item.kind === "series" ? "You're in the series" : "You're booked"}</h2>
+    <p>${item.kind === "series" ? `All ${n} sessions are on your schedule.` : "See you soon. We've sent a confirmation email and text."}</p>${ticket(item)}
+    ${item.guest ? `<p>${item.guest.kind === "guest" ? `We've sent <b>${esc(item.guest.name)}</b> an invite to register and sign their waiver before your session.` : `<b>${esc(item.guest.name)}</b> has been added and notified.`}</p>` : ""}
+    <div class="row-btns"><a class="btn solid" href="#/account" data-close>My bookings</a><button class="btn navy" data-close id="cal">Add to calendar</button></div>`);
+  $("#cal").onclick = () => toast("Calendar file downloaded (demo)");
+  render();
+}
+
+function confirmWaitlist(item) {
+  setModal(`${steps(3, 4)}<h2>Join the waitlist</h2>${ticket(item)}<p>This class is full. If a spot opens up before class, we'll book you automatically and text you. Your credit is only used if you get in.</p>
+    <button class="btn solid block" id="wl">Join waitlist</button>`);
+  $("#wl").onclick = () => {
+    state.bookings.push({ id: Math.random().toString(36).slice(2), ref: item.ref, kind: item.kind, title: item.title, start: item.start, mins: item.mins, place: item.place, status: "waitlist", pos: 2 });
+    setModal(`<div class="big-check">✓</div><h2>You're on the waitlist</h2><p>You're <b>#2</b> in line. We'll text you if you get in.</p>${ticket(item)}<a class="btn solid" href="#/account" data-close>My bookings</a>`);
+    render();
+  };
+}
+
+function buy(pid) {
+  const p = PRODUCTS[pid];
+  const go = () => {
+    setModal(`${steps(3, 4)}<h2>Checkout</h2>
+      <div class="ticket"><small>${p.monthly ? "Monthly membership" : p.kind === "reset" ? "Reset Room" : "One-time purchase"}</small><b>${esc(p.name)}</b><small>${money(p.price)}${p.monthly ? " / month · renews automatically, cancel anytime" : ""}${p.note ? " · " + esc(p.note) : ""}</small></div>
+      <button class="opt" data-m="apple"><div><b>Apple Pay</b><span>Secure checkout by Stripe</span></div><em>${money(p.price)}</em></button>
+      <button class="opt" data-m="card"><div><b>Card</b><span>Secure checkout by Stripe</span></div><em>${money(p.price)}</em></button>
+      <p style="font-size:12px">Prototype: no card details are collected and nothing is charged.</p>`);
+    document.querySelectorAll("[data-m]").forEach(b => b.onclick = () => {
+      if (p.kind === "unlimited") state.plan = { ...p };
+      else if (p.kind === "reset") state.resetCredits += p.credits;
+      else if (p.monthly) { state.plan = { ...p }; state.credits += p.credits; }
+      else state.credits += p.credits;
+      state.orders.push({ name: p.name, price: p.price, at: new Date() });
+      setModal(`${steps(4, 4)}<div class="big-check">✓</div><h2>You're all set</h2><p><b>${esc(p.name)}</b> is on your account. Time to find your flow.</p>
+        <div class="row-btns"><a class="btn solid" href="#/schedule" data-close>Book a class</a><a class="btn navy" href="#/account" data-close>My account</a></div>`);
+      renderHeader(); render();
+    });
+  };
+  if (!state.user) { openModal(""); signIn(go, true); } else { openModal(""); go(); }
+}
+
+// ───────── Views ─────────
+const wave = (from, to) => `<svg class="wave" viewBox="0 0 1440 200" preserveAspectRatio="none" style="background:${to};height:clamp(80px,12vw,200px)" aria-hidden="true">
+  <path fill="${from}" d="M0,0H1440V70C1310,40 1190,130 1010,110C840,90 760,20 600,40C430,62 330,140 180,120C100,110 40,80 0,70Z"/>
+  <path fill="${from}" opacity=".7" d="M0,90C120,120 250,170 420,150C600,128 690,60 860,80C1040,100 1150,170 1300,150C1370,140 1410,120 1440,110V0H0Z"/>
+  <path fill="${from}" opacity=".45" d="M0,120C160,160 300,200 470,180C650,158 740,100 920,120C1090,140 1200,200 1340,185C1390,180 1420,170 1440,160V0H0Z"/>
+  <path fill="${from}" opacity=".22" d="M0,150C180,190 330,210 500,195C680,178 780,140 950,155C1110,170 1230,205 1360,200C1400,198 1425,192 1440,188V0H0Z"/></svg>`;
+
+function home() {
+  const types = TYPES.map(t => `<span>${t.name}</span><i>✦</i>`).join("");
+  return `
+  <section class="navy-bg">
+    <div class="wrap hero">
+      <div class="hero-img"><img src="${IMG.hero}" alt="A dancer mid-movement with the words Movement, Fitness, Wellness"></div>
+      <div>
+        <div class="eyebrow" style="color:var(--lavender-2)">Now booking · Cedar Grove, NJ</div>
+        <h1 class="display xl" style="margin-top:18px">Find your <span class="grad">flow state.</span></h1>
+        <p class="lede">High-energy and restorative. Beat-driven movement and sound-led stillness. Infrared-heated and non-heated studios, all under one spectacular skylight.</p>
+        <div class="hero-ctas"><a class="btn solid" href="#/schedule">Book a class</a><a class="btn" href="#/pricing">Intro offer · 2 weeks $59</a></div>
+      </div>
+    </div>
+    <div class="marquee"><div>${types}${types}</div></div>
+  </section>
+  ${wave("#09003e", "#ffffff")}
+  <section class="sec" style="padding-top:40px">
+    <div class="wrap two">
+      <div class="stack">
+        <div class="eyebrow" style="color:var(--pink)">Two studios</div>
+        <h2 class="display lg">Sun-drenched &amp; <span class="grad">colorfully charged.</span></h2>
+        <p class="lede" style="color:var(--muted)">Cedar Grove's new movement, fitness and wellness destination, with an infrared-heated studio, a non-heated studio and a whole spectrum of ways to move, feel and connect.</p>
+        <div class="facts" style="color:var(--navy)"><span class="fact">1st Floor · Non-heated</span><span class="fact">2nd Floor · Infrared heated</span></div>
+        <div class="row-btns"><a class="btn navy" href="#/classes">Explore classes</a><a class="btn solid" href="#/schedule?heat=heated">Heated schedule</a></div>
+      </div>
+      <div class="feature-img"><img src="${IMG.studio}" alt="The skylit studio with the words Infrared heated and non-heated studios"></div>
+    </div>
+  </section>
+  <section class="sec soft-bg">
+    <div class="wrap">
+      <div class="eyebrow" style="color:var(--pink)">Find what moves you</div>
+      <h2 class="display lg" style="margin:14px 0 36px">Ten ways to move.</h2>
+      <div class="grid g4">${TYPES.map(t => `<a class="tile" href="#/classes/${slug(t.name)}" style="background:linear-gradient(140deg,${t.g[0]},${t.g[1]})"><b>${t.name}</b><span>${t.blurb}</span></a>`).join("")}
+        <a class="tile" href="#/schedule" style="background:#fff;color:var(--navy);border:2px solid var(--navy)"><b>Full schedule →</b><span>Filter by instructor, class and heat</span></a>
+        <a class="tile" href="#/events" style="background:#fff;color:var(--navy);border:2px solid var(--navy)"><b>Pop-ups &amp; series →</b><span>Sound baths, dance nights, workshops</span></a>
+      </div>
+    </div>
+  </section>
+  <section class="sec lav-bg">
+    <div class="wrap two">
+      <div class="stack">
+        <h2 class="display xl">The Flow.</h2>
+        <h3 class="display md" style="color:#fff">Movement on your time.</h3>
+      </div>
+      <div class="stack">
+        <p class="lede">Stay in your rhythm even when your schedule doesn't line up with a class. Move through our curated video-guided stations, with a new session starting every 15 minutes during Flow hours. A complete 45-minute workout on your own time. When life happens, go with The Flow.</p>
+        <div class="facts"><span class="fact">New start every 15 min</span><span class="fact">45 minutes</span><span class="fact">Video-guided</span></div>
+        <a class="btn navy" href="#/flow">Pick your start time</a>
+      </div>
+    </div>
+  </section>
+  ${wave("#9982e3", "#09003e")}
+  <section class="sec navy-bg" style="padding-top:40px">
+    <div class="wrap two">
+      <div class="stack">
+        <div class="eyebrow" style="color:var(--pink)">The Reset Room</div>
+        <h2 class="display lg">Recover &amp; <span class="grad">recharge.</span></h2>
+        <p class="lede" style="color:var(--lavender-2)">Red light, compression, therapeutic heat, vibration and sound frequency come together in a multisensory recovery experience. Reset solo or with a friend, because catching up counts as self-care too.</p>
+        <div class="row-btns"><a class="btn solid" href="#/reset">Book the Reset Room</a><a class="btn white" href="#/reset">Bring a friend</a></div>
+      </div>
+      <div class="grid g2">
+        ${["Red light", "Compression", "Infrared heat", "Vibration + sound"].map((x, i) => `<div style="border:2px solid var(--navy-3);border-radius:20px;padding:24px;min-height:140px;display:flex;align-items:flex-end;background:linear-gradient(150deg, ${["rgba(238,36,5,.35)", "rgba(153,130,227,.3)", "rgba(230,79,185,.3)", "rgba(36,24,115,.9)"][i]}, transparent)"><b style="text-transform:uppercase;font-size:1.2rem">${x}</b></div>`).join("")}
+      </div>
+    </div>
+  </section>
+  ${wave("#09003e", "#ffffff")}
+  <section class="sec" style="padding-top:40px">
+    <div class="wrap two">
+      <div class="stack">
+        <div class="eyebrow" style="color:var(--pink)">Founding memberships</div>
+        <h2 class="display lg">Be first to <span class="grad">find your flow.</span></h2>
+        <p class="lede" style="color:var(--muted)">Join the list for our Founding Membership offer, class schedules and opening news.</p>
+        <p style="color:var(--muted)"><b style="color:var(--navy)">614 Pompton Ave.</b><br>Cedar Grove, New Jersey</p>
+      </div>
+      <form class="card" id="lead" style="padding:32px">
+        <div class="grid g2" style="gap:12px"><div class="field"><label for="fn">First name</label><input id="fn" required></div><div class="field"><label for="ln">Last name</label><input id="ln" required></div></div>
+        <div style="height:12px"></div>
+        <div class="field"><label for="le">Email</label><input id="le" type="email" required></div>
+        <div style="height:12px"></div>
+        <div class="field"><label for="lp">Phone (for texts)</label><input id="lp" type="tel"></div>
+        <label class="check"><input type="checkbox" checked> Sign me up for news and updates</label>
+        <button class="btn solid block" type="submit">Get first access</button>
+      </form>
+    </div>
+  </section>`;
+}
+
+function scheduleView(q) {
+  const key = DAYS.includes(q.day) ? q.day : DAYS[0];
+  const f = { inst: q.inst || "", type: q.type || "", name: q.name || "", heat: q.heat || "" };
+  const namesForType = CLASSES.filter(c => !f.type || c.type === f.type);
+  let rows = schedule(key).filter(o => (!f.inst || o.inst.id === f.inst) && (!f.type || o.cls.type === f.type) && (!f.name || o.cls.id === f.name) && (!f.heat || (f.heat === "heated") === o.cls.heated));
+  const showFlow = !f.inst && !f.name && (!f.type) && f.heat !== "heated";
+  const items = rows.map(o => ({ t: o.start, html: classRow(o) }));
+  if (showFlow) flowBlocks(key).forEach(b => items.push({ t: at(key, b.start), html: flowRow(key, b) }));
+  items.sort((a, b) => a.t - b.t);
+  const opt = (v, l, cur) => `<option value="${esc(v)}" ${v === cur ? "selected" : ""}>${esc(l)}</option>`;
+  return `
+  <section class="page-head"><div class="wrap"><h1 class="display lg">Schedule</h1><p>Book group classes and The Flow. Filter by instructor, class type, class name and heat.</p></div></section>
+  <section class="sec" style="padding-top:32px">
+    <div class="wrap">
+      <div class="days">${DAYS.map(k => { const d = fromKey(k); return `<a class="day ${k === key ? "on" : ""}" href="${qs("#/schedule", { ...f, day: k })}"><small>${k === DAYS[0] ? "Today" : d.toLocaleDateString("en-US", { weekday: "short" })}</small><b>${d.getDate()}</b></a>`; }).join("")}</div>
+      <div class="filters">
+        <div class="field"><label for="f-inst">Instructor</label><select id="f-inst">${opt("", "All instructors", f.inst)}${INSTRUCTORS.map(i => opt(i.id, i.name, f.inst)).join("")}</select></div>
+        <div class="field"><label for="f-type">Class type</label><select id="f-type">${opt("", "All types", f.type)}${TYPES.map(t => opt(t.name, t.name, f.type)).join("")}</select></div>
+        <div class="field"><label for="f-name">Class</label><select id="f-name">${opt("", "All classes", f.name)}${namesForType.map(c => opt(c.id, c.name, f.name)).join("")}</select></div>
+        <div class="field"><label for="f-heat">Heat</label><select id="f-heat">${opt("", "Heated & non-heated", f.heat)}${opt("heated", "Infrared heated", f.heat)}${opt("non", "Non-heated", f.heat)}</select></div>
+        <button class="btn navy sm" id="f-clear" style="height:46px">Clear</button>
+      </div>
+      <div class="eyebrow" style="color:var(--muted);margin-top:24px">${fmtLong(fromKey(key))}</div>
+      <div class="rows">${items.length ? items.map(i => i.html).join("") : `<div class="empty">No classes match these filters on this day. <button class="link" id="f-clear2">Clear filters</button></div>`}</div>
+    </div>
+  </section>`;
+}
+function classRow(o) {
+  const past = o.start < now();
+  const full = o.taken >= o.cap;
+  const mine = state.bookings.find(b => b.ref === o.id && b.status !== "cancelled");
+  const left = o.cap - o.taken;
+  let act;
+  if (mine) act = `<span class="pill ok">${mine.status === "waitlist" ? "On waitlist" : "Booked"}</span>`;
+  else if (past) act = `<span class="pill">Started</span>`;
+  else if (full) act = `<button class="btn navy sm" data-book="${o.id}">Waitlist</button><small>Full · waitlist open</small>`;
+  else act = `<button class="btn solid sm" data-book="${o.id}">Book</button><small>${left <= 4 ? `<b style="color:var(--flame)">${left} spots left</b>` : `${left} spots left`}</small>`;
+  return `<div class="row"><div class="time"><b>${fmtTime(o.start)}</b><small>${o.cls.mins} min</small></div>
+    <div><h3><button data-class="${o.cls.id}">${esc(o.cls.name)}</button></h3><div class="meta">with <a href="#/instructors/${o.inst.id}">${esc(o.inst.name)}</a> · ${o.floor}</div>
+    <div class="pills">${o.cls.heated ? `<span class="pill hot">Infrared heated</span>` : `<span class="pill">Non-heated</span>`}<span class="pill">${esc(o.cls.type)}</span><span class="pill">${esc(o.cls.level)}</span></div></div>
+    <div class="act">${act}</div></div>`;
+}
+function flowRow(key, b) {
+  const start = at(key, b.start); const end = at(key, b.end); const past = addMin(end, -45) < now();
+  return `<div class="row flow"><div class="time"><b>${fmtTime(start)}</b><small>to ${fmtTime(end)}</small></div>
+    <div><h3><a href="#/flow?day=${key}&block=${b.id}" style="text-decoration:none">The Flow · ${esc(b.name)}</a></h3><div class="meta">Video-guided circuit · new start every 15 min · 1st Floor</div>
+    <div class="pills"><span class="pill">45 min</span><span class="pill">Self-paced start</span>${b.restricted ? `<span class="pill lock">Members only</span>` : ""}</div></div>
+    <div class="act">${past ? `<span class="pill">Ended</span>` : `<a class="btn sm" href="#/flow?day=${key}&block=${b.id}">Pick a time</a>`}</div></div>`;
+}
+function bindSchedule(q) {
+  const go = patch => { const f = { day: q.day || DAYS[0], inst: $("#f-inst").value, type: $("#f-type").value, name: $("#f-name").value, heat: $("#f-heat").value, ...patch }; location.hash = qs("#/schedule", f); };
+  $("#f-inst").onchange = () => go({});
+  $("#f-type").onchange = () => go({ name: "" });
+  $("#f-name").onchange = () => go({});
+  $("#f-heat").onchange = () => go({});
+  const clear = () => location.hash = qs("#/schedule", { day: q.day || "" });
+  $("#f-clear").onclick = clear; const c2 = $("#f-clear2"); if (c2) c2.onclick = clear;
+  const key = DAYS.includes(q.day) ? q.day : DAYS[0];
+  document.querySelectorAll("[data-book]").forEach(b => b.onclick = () => {
+    const o = schedule(key).find(x => x.id === b.dataset.book);
+    begin({ ref: o.id, kind: "class", label: `${o.cls.type} · with ${o.inst.name}`, title: o.cls.name, start: o.start, mins: o.cls.mins, place: o.floor, waitlist: o.taken >= o.cap });
+  });
+  document.querySelectorAll("[data-class]").forEach(b => b.onclick = () => classModal(b.dataset.class));
+}
+function classModal(id) {
+  const c = classById(id); const teachers = INSTRUCTORS.filter(i => i.teaches.includes(c.type));
+  openModal(`<div class="pills" style="margin-bottom:12px">${c.heated ? `<span class="pill hot">Infrared heated</span>` : `<span class="pill">Non-heated</span>`}<span class="pill">${c.mins} min</span><span class="pill">${esc(c.level)}</span></div>
+    <h2>${esc(c.name)}</h2><p>${esc(c.desc)}</p><p><b style="color:var(--navy)">Taught by</b> ${teachers.map(t => `<a href="#/instructors/${t.id}" data-close>${esc(t.name)}</a>`).join(", ")}</p>
+    <div class="row-btns"><a class="btn solid" href="${qs("#/schedule", { name: c.id, type: c.type })}" data-close>See times</a><a class="btn navy" href="#/classes/${slug(c.type)}" data-close>More ${esc(c.type)}</a></div>`);
+}
+
+function flowView(q) {
+  const key = DAYS.includes(q.day) ? q.day : DAYS[0];
+  const blocks = flowBlocks(key);
+  const block = blocks.find(b => b.id === q.block);
+  const slots = block ? flowSlots(key, block) : [];
+  const sel = slots.find(s => s.id === q.slot);
+  return `
+  <section class="page-head" style="background:var(--lavender);color:var(--navy)"><div class="wrap"><h1 class="display lg">The Flow.</h1><p style="color:var(--navy)">A 45-minute video-guided circuit with a new start every 15 minutes. Pick a block, then your start time.</p></div></section>
+  <section class="sec" style="padding-top:32px">
+    <div class="wrap">
+      <div class="days">${DAYS.map(k => { const d = fromKey(k); return `<a class="day ${k === key ? "on" : ""}" href="#/flow?day=${k}"><small>${k === DAYS[0] ? "Today" : d.toLocaleDateString("en-US", { weekday: "short" })}</small><b>${d.getDate()}</b></a>`; }).join("")}</div>
+      <div class="step-label"><b>1</b><h2>Choose a Flow block</h2></div>
+      <div class="blocks">${blocks.map(b => { const ended = addMin(at(key, b.end), -45) < now(); return `<a class="block ${b.id === q.block ? "on" : ""} ${b.restricted ? "locked" : ""}" href="#/flow?day=${key}&block=${b.id}" style="text-decoration:none${ended ? ";opacity:.45;pointer-events:none" : ""}">
+        <b>${esc(b.name)}</b><span>${fmtTime(at(key, b.start))} – ${fmtTime(at(key, b.end))}</span><div class="pills" style="margin-top:10px">${b.restricted ? `<span class="pill lock">Members only</span>` : `<span class="pill">Open to all</span>`}${ended ? `<span class="pill">Ended</span>` : ""}</div></a>`; }).join("")}</div>
+      ${block ? `<div class="step-label"><b>2</b><h2>Choose your start time</h2></div>
+        <div class="slots">${slots.map(s => { const full = s.taken >= s.cap; const past = s.start < now(); const mine = state.bookings.some(b => b.ref === s.id && b.status === "booked"); return `<a class="slot ${s.id === q.slot ? "on" : ""}" href="#/flow?day=${key}&block=${block.id}&slot=${encodeURIComponent(s.id)}" style="text-decoration:none${full || past || mine ? ";opacity:.45;pointer-events:none" : ""}"><b>${fmtTime(s.start)}</b><small>${mine ? "Booked" : past ? "Started" : full ? "Full" : `${s.cap - s.taken} of ${s.cap} open`}</small></a>`; }).join("")}</div>` : `<p style="color:var(--muted);margin-top:24px">Select a block to see start times.</p>`}
+      ${sel ? `<div class="summary"><div><small>The Flow · ${esc(block.name)}</small><b style="font-size:1.2rem;text-transform:uppercase">${fmtDay(sel.start)} · ${fmtTime(sel.start)} – ${fmtTime(addMin(sel.start, 45))}</b></div><button class="btn solid" id="flow-book">Book this start time</button></div>` : ""}
+      <div class="grid g3" style="margin-top:56px">
+        <div class="card"><h3>No such thing as late</h3><p>A new session starts every 15 minutes. Pick the start that fits your day.</p></div>
+        <div class="card"><h3>Stack it</h3><p>Add a Flow session before or after a group class for an extra boost.</p></div>
+        <div class="card"><h3>Uses one credit</h3><p>Flow sessions book like a class, with your membership, a pack credit or a drop-in.</p></div>
+      </div>
+    </div>
+  </section>`;
+}
+function bindFlow(q) {
+  const b = $("#flow-book"); if (!b) return;
+  const key = DAYS.includes(q.day) ? q.day : DAYS[0];
+  const block = flowBlocks(key).find(x => x.id === q.block); const s = flowSlots(key, block).find(x => x.id === q.slot);
+  b.onclick = () => begin({ ref: s.id, kind: "flow", label: `The Flow · ${block.name}`, title: "The Flow", start: s.start, mins: 45, place: "1st Floor", restricted: block.restricted });
+}
+
+let resetMode = { mode: "solo", member: null, guest: null };
+function resetView(q) {
+  const key = DAYS.includes(q.day) ? q.day : DAYS[0];
+  const slots = resetSlots(key); const sel = slots.find(s => s.id === q.slot);
+  const m = resetMode.mode;
+  return `
+  <section class="page-head"><div class="wrap"><h1 class="display lg">Reset <span class="grad">Room.</span></h1><p>Red light, compression, therapeutic heat, vibration and sound. 45-minute private sessions for one, or bring a friend.</p></div></section>
+  <section class="sec" style="padding-top:32px">
+    <div class="wrap">
+      <div class="days">${DAYS.map(k => { const d = fromKey(k); return `<a class="day ${k === key ? "on" : ""}" href="#/reset?day=${k}"><small>${k === DAYS[0] ? "Today" : d.toLocaleDateString("en-US", { weekday: "short" })}</small><b>${d.getDate()}</b></a>`; }).join("")}</div>
+      <div class="step-label"><b>1</b><h2>Choose a time</h2></div>
+      <div class="slots">${slots.map(s => { const past = s.start < now(); return `<a class="slot ${s.id === q.slot ? "on" : ""}" href="#/reset?day=${key}&slot=${encodeURIComponent(s.id)}" style="text-decoration:none${s.taken || past ? ";opacity:.45;pointer-events:none" : ""}"><b>${fmtTime(s.start)}</b><small>${past ? "Passed" : s.taken ? "Booked" : "Available"}</small></a>`; }).join("")}</div>
+      ${sel ? `
+      <div class="step-label"><b>2</b><h2>Solo or with a friend?</h2></div>
+      <div class="choice">
+        <button data-mode="solo" class="${m === "solo" ? "on" : ""}"><b>Just me</b><span>A private reset, all yours.</span></button>
+        <button data-mode="member" class="${m === "member" ? "on" : ""}"><b>Invite a member</b><span>Someone already registered at Flow State.</span></button>
+        <button data-mode="guest" class="${m === "guest" ? "on" : ""}"><b>Invite a first-timer</b><span>Uses a free guest pass. ${state.user ? `You have ${state.guestPasses} left.` : "Members get 1 a month."}</span></button>
+      </div>
+      <div class="guest-box">${m === "member" ? `<div class="field" style="max-width:420px"><label for="mem-q">Find a member by name or email</label><input id="mem-q" placeholder="Start typing… try Sam" value="${esc(resetMode.memberQ || "")}"></div><div id="mem-results" style="max-width:420px;margin-top:8px"></div>${resetMode.member ? `<p style="margin-top:12px"><span class="pill ok">Inviting ${esc(resetMode.member.name)}</span></p>` : ""}` : ""}
+        ${m === "guest" ? `<div class="grid g2" style="max-width:640px;gap:12px"><div class="field"><label for="g-name">Guest's name</label><input id="g-name" value="${esc(resetMode.guest?.name || "")}"></div><div class="field"><label for="g-email">Guest's email or phone</label><input id="g-email" value="${esc(resetMode.guest?.email || "")}"></div></div><p style="color:var(--muted);font-size:14px;margin-top:10px">They'll get a link to register and sign their waiver before the session.</p>` : ""}</div>
+      <div class="summary"><div><small>Reset Room · 45 min</small><b style="font-size:1.2rem;text-transform:uppercase">${fmtDay(sel.start)} · ${fmtTime(sel.start)}</b></div><button class="btn solid" id="reset-book">Continue</button></div>` : ""}
+    </div>
+  </section>`;
+}
+function bindReset(q) {
+  document.querySelectorAll("[data-mode]").forEach(b => b.onclick = () => { resetMode = { ...resetMode, mode: b.dataset.mode }; render(); });
+  const mq = $("#mem-q");
+  if (mq) {
+    const show = () => {
+      const v = mq.value.trim().toLowerCase(); resetMode.memberQ = mq.value;
+      const hits = v ? MEMBERS.filter(x => x.name.toLowerCase().includes(v) || x.email.includes(v)) : [];
+      $("#mem-results").innerHTML = hits.map(x => `<button class="opt" data-mem="${esc(x.email)}"><div><b>${esc(x.name)}</b><span>${esc(x.email)}</span></div><em>Invite</em></button>`).join("") || (v ? `<p style="color:var(--muted);font-size:14px">No member found. Invite them as a first-timer instead.</p>` : "");
+      document.querySelectorAll("[data-mem]").forEach(b => b.onclick = () => { resetMode.member = MEMBERS.find(x => x.email === b.dataset.mem); resetMode.memberQ = resetMode.member.name; render(); });
+    };
+    mq.oninput = show; show();
+  }
+  const btn = $("#reset-book"); if (!btn) return;
+  btn.onclick = () => {
+    const key = DAYS.includes(q.day) ? q.day : DAYS[0]; const s = resetSlots(key).find(x => x.id === q.slot);
+    let guest = null;
+    if (resetMode.mode === "member") { if (!resetMode.member) return toast("Choose a member to invite"); guest = { kind: "member", name: resetMode.member.name }; }
+    if (resetMode.mode === "guest") {
+      const n = $("#g-name").value.trim(), e = $("#g-email").value.trim();
+      if (!n || !e) return toast("Add your guest's name and contact");
+      if (state.user && state.guestPasses < 1) return toast("No guest passes left this month");
+      resetMode.guest = { name: n, email: e }; guest = { kind: "guest", name: n };
+    }
+    begin({ ref: s.id, kind: "reset", label: guest ? "Reset Room · for two" : "Reset Room · solo", title: "Reset Room", start: s.start, mins: 45, place: "Reset Room", guest });
+  };
+}
+
+function classesView(typeSlug) {
+  const t = TYPES.find(x => slug(x.name) === typeSlug);
+  if (t) {
+    const list = CLASSES.filter(c => c.type === t.name);
+    const teachers = INSTRUCTORS.filter(i => i.teaches.includes(t.name));
+    return `<section class="page-head" style="background:linear-gradient(140deg,${t.g[0]},${t.g[1]})"><div class="wrap"><a class="crumb" href="#/classes" style="color:#fff">← All classes</a><h1 class="display lg">${esc(t.name)}</h1><p style="color:#fff">${esc(t.blurb)}</p></div></section>
+      <section class="sec" style="padding-top:48px"><div class="wrap">
+        <div class="grid g2">${list.map(c => `<div class="card"><div class="pills" style="margin-bottom:12px">${c.heated ? `<span class="pill hot">Infrared heated</span>` : `<span class="pill">Non-heated</span>`}<span class="pill">${c.mins} min</span><span class="pill">${esc(c.level)}</span></div><h3>${esc(c.name)}</h3><p>${esc(c.desc)}</p><div style="height:16px"></div><a class="btn solid sm" href="${qs("#/schedule", { type: t.name, name: c.id })}">See times</a></div>`).join("")}</div>
+        <h2 class="display md" style="margin:56px 0 20px">Who teaches it</h2>
+        <div class="grid g3">${teachers.map(instCard).join("")}</div>
+      </div></section>`;
+  }
+  return `<section class="page-head"><div class="wrap"><h1 class="display lg">Classes</h1><p>Every class type and the specific classes inside it. High-energy and restorative.</p></div></section>
+    <section class="sec" style="padding-top:48px"><div class="wrap">${TYPES.map(t => {
+      const list = CLASSES.filter(c => c.type === t.name);
+      return `<div style="display:grid;grid-template-columns:minmax(0,280px) 1fr;gap:24px;padding:28px 0;border-bottom:1.5px solid var(--line)" class="type-row">
+        <a class="tile" href="#/classes/${slug(t.name)}" style="min-height:140px;background:linear-gradient(140deg,${t.g[0]},${t.g[1]})"><b>${t.name}</b><span>${t.blurb}</span></a>
+        <div class="grid g2" style="align-content:start">${list.map(c => `<button class="card clickable" data-class="${c.id}" style="text-align:left"><h3>${esc(c.name)}</h3><p>${c.mins} min · ${c.heated ? "Infrared heated" : "Non-heated"} · ${esc(c.level)}</p></button>`).join("")}</div></div>`;
+    }).join("")}</div></section>
+    <style>@media (max-width:760px){.type-row{grid-template-columns:1fr!important}}</style>`;
+}
+
+const instCard = i => `<a class="card clickable" href="#/instructors/${i.id}"><div class="face">${esc(i.name[0])}</div><h3>${esc(i.name)}</h3><p>${esc(i.role)}</p><div class="pills" style="margin-top:12px">${i.teaches.map(t => `<span class="pill">${esc(t)}</span>`).join("")}</div></a>`;
+function instructorsView(id) {
+  const i = instById(id);
+  if (i) {
+    const upcoming = DAYS.flatMap(k => schedule(k)).filter(o => o.inst.id === i.id && o.start > now()).slice(0, 5);
+    return `<section class="page-head"><div class="wrap"><a class="crumb" href="#/instructors">← All instructors</a></div></section>
+      <section class="sec" style="padding-top:48px"><div class="wrap two" style="align-items:start">
+        <div><div class="face" style="font-size:7rem;max-width:420px">${esc(i.name[0])}</div><p style="color:var(--muted);font-size:13px">Photo coming soon</p></div>
+        <div class="stack"><div class="eyebrow" style="color:var(--pink)">${esc(i.role)}</div><h1 class="display lg">${esc(i.name)}</h1><p class="lede" style="color:var(--muted)">${esc(i.bio)}</p>
+          <div class="pills">${i.teaches.map(t => `<a class="pill" href="#/classes/${slug(t)}" style="text-decoration:none">${esc(t)}</a>`).join("")}</div>
+          <h3 class="display" style="font-size:1.3rem;margin-top:36px">Upcoming classes</h3>
+          <div class="rows" style="margin-top:8px">${upcoming.map(o => `<div class="bk"><div><b>${esc(o.cls.name)}</b><small>${fmtDay(o.start)} · ${fmtTime(o.start)} · ${o.floor}</small></div><a class="btn solid sm" href="${qs("#/schedule", { day: dayKey(o.start), inst: i.id })}">Book</a></div>`).join("") || `<p style="color:var(--muted)">No classes this week.</p>`}</div>
+        </div></div></section>`;
+  }
+  return `<section class="page-head"><div class="wrap"><h1 class="display lg">Instructors</h1><p>Sample instructor profiles. Bios and photos to come from the studio.</p></div></section>
+    <section class="sec" style="padding-top:48px"><div class="wrap"><div class="grid g3">${INSTRUCTORS.map(instCard).join("")}</div></div></section>`;
+}
+
+function eventsView() {
+  const card = e => { const d = eventDate(e); const mine = state.bookings.some(b => b.ref === e.id && b.status === "booked"); return `<div class="card" style="display:flex;flex-direction:column">
+    <div class="pills" style="margin-bottom:12px"><span class="pill ${e.kind === "series" ? "lock" : "hot"}">${esc(e.type)}</span><span class="pill">${e.mins} min</span><span class="pill">${e.place}</span></div>
+    <h3 style="font-size:1.4rem">${esc(e.name)}</h3><p style="margin-bottom:12px">${esc(e.desc)}</p>
+    <p><b style="color:var(--navy)">${e.kind === "series" ? "Starts " : ""}${fmtLong(d)} · ${fmtTime(d)}</b>${e.kind === "series" ? `<br>${e.sessions} weekly sessions` : ""}</p>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:20px"><span class="price" style="font-size:2rem;margin:0">${money(e.price)}</span>${mine ? `<span class="pill ok">You're in</span>` : `<button class="btn solid sm" data-ev="${e.id}">${e.kind === "series" ? "Join series" : "Get tickets"}</button>`}</div></div>`; };
+  return `<section class="page-head"><div class="wrap"><h1 class="display lg">Events <span class="grad">&amp; series.</span></h1><p>Pop-ups, workshops and multi-week series. Priced on their own, so member credits don't apply.</p></div></section>
+    <section class="sec" style="padding-top:48px"><div class="wrap">
+      <h2 class="display md" style="margin-bottom:20px">Pop-ups</h2><div class="grid g2">${EVENTS.filter(e => e.kind === "event").map(card).join("")}</div>
+      <h2 class="display md" style="margin:56px 0 20px">Workshop series</h2><div class="grid g2">${EVENTS.filter(e => e.kind === "series").map(card).join("")}</div>
+    </div></section>`;
+}
+function bindEvents() {
+  document.querySelectorAll("[data-ev]").forEach(b => b.onclick = () => { const e = EVENTS.find(x => x.id === b.dataset.ev); begin({ ref: e.id, kind: e.kind, label: e.type, title: e.name, start: eventDate(e), mins: e.mins, place: e.place, price: e.price, sessions: e.sessions }); });
+}
+
+function pricingView() {
+  const p = PRODUCTS;
+  const pc = (x, feature, ticks, cta = "Buy") => `<div class="card price-card ${feature ? "feature" : ""}">${feature ? `<span class="pill hot" style="align-self:flex-start">${feature}</span>` : ""}<h3 style="margin-top:${feature ? 14 : 0}px">${esc(x.name)}</h3>
+    <div class="price">${money(x.price)}${x.monthly ? `<small> /month</small>` : ""}</div><p>${esc(x.note || (x.monthly ? "Renews monthly · cancel anytime" : ""))}</p>
+    <ul class="ticks">${ticks.map(t => `<li>${t}</li>`).join("")}</ul><button class="btn ${feature ? "solid" : "navy"} block" data-buy="${x.id}">${cta}</button></div>`;
+  return `<section class="page-head"><div class="wrap"><h1 class="display lg">Pricing</h1><p>Memberships, packs and Reset Room sessions. Sample prices for the prototype.</p></div></section>
+    <section class="sec" style="padding-top:48px"><div class="wrap">
+      <div class="card feature" style="display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;margin-bottom:48px;background:var(--grad);border:0"><div><div class="eyebrow">New here?</div><h2 class="display md" style="margin:8px 0">2 weeks unlimited · $59</h2><p style="color:#fff">Try every class, The Flow and the heated studio.</p></div><button class="btn white" data-buy="intro">Start intro offer</button></div>
+      <h2 class="display md" style="margin-bottom:20px">Memberships</h2>
+      <div class="grid g4">
+        ${pc(p.founding, "Founding · limited", ["Unlimited classes &amp; The Flow", "Rate locked for life", "2 guest passes / month", "$25 Reset Room sessions"], "Become a founder")}
+        ${pc(p.unlimited, "", ["Unlimited classes &amp; The Flow", "1 guest pass / month", "$25 Reset Room sessions"])}
+        ${pc(p.eight, "", ["8 classes or Flow sessions", "Unused credits don't roll over", "Members-only Flow blocks"])}
+        ${pc(p.four, "", ["4 classes or Flow sessions", "Perfect to stack with home workouts"])}
+      </div>
+      <h2 class="display md" style="margin:56px 0 20px">Class packs</h2>
+      <div class="grid g3">${pc(p.single, "", ["Any class or Flow session"])}${pc(p.five, "", ["Share-free, use anytime", "Any class or Flow session"])}${pc(p.ten, "", ["Best per-class value", "Any class or Flow session"])}</div>
+      <h2 class="display md" style="margin:56px 0 20px">Reset Room</h2>
+      <div class="grid g2">${pc(p.reset1, "", ["45-minute private session", "Bring a friend"])}${pc(p.reset4, "", ["Four 45-minute sessions", "Members save more"])}</div>
+      <p style="color:var(--muted);margin-top:32px;font-size:14px">Pop-ups, events and workshop series are priced separately. <a href="#/events">See events →</a></p>
+    </div></section>`;
+}
+
+function accountView() {
+  if (!state.user) return `<section class="page-head"><div class="wrap"><h1 class="display lg">My account</h1></div></section>
+    <section class="sec"><div class="wrap" style="max-width:560px"><div class="card" style="padding:32px;text-align:center"><h3>Sign in to see your bookings</h3><p style="margin-bottom:20px">Bookings, memberships, credits, waivers and guest passes, all in one place.</p><button class="btn solid" id="acct-in">Sign in</button></div></div></section>`;
+  const up = state.bookings.filter(b => b.status !== "cancelled" && b.start > addMin(now(), -60)).sort((a, b) => a.start - b.start);
+  const cancelled = state.bookings.filter(b => b.status === "cancelled");
+  return `<section class="page-head"><div class="wrap" style="display:flex;align-items:center;gap:20px"><div class="avatar" style="width:72px;height:72px;font-size:26px">${esc(state.user.name[0])}</div><div><h1 class="display md">Hi, ${esc(state.user.name.split(" ")[0])}</h1><p style="margin-top:6px">${esc(state.user.email)}</p></div></div></section>
+    <section class="sec" style="padding-top:40px"><div class="wrap acct-grid">
+      <div class="card"><h3>Upcoming</h3>
+        ${up.length ? up.map(b => { const late = b.start - now() < 12 * 3600000; return `<div class="bk"><div><b>${esc(b.title)}</b><small>${fmtDay(b.start)} · ${fmtTime(b.start)}${b.place ? " · " + esc(b.place) : ""}</small>${b.guest ? `<small>+ ${esc(b.guest.name)} ${b.guest.kind === "guest" ? "<span class='pill warn'>Waiver pending</span>" : "<span class='pill ok'>Member</span>"}</small>` : ""}${b.status === "waitlist" ? `<small><span class="pill">Waitlist #${b.pos}</span></small>` : ""}</div><button class="btn navy sm" data-cancel="${b.id}" data-late="${late && b.status === "booked" ? 1 : 0}">${b.status === "waitlist" ? "Leave" : "Cancel"}</button></div>`; }).join("") : `<p style="margin:12px 0 20px">Nothing booked yet.</p><a class="btn solid sm" href="#/schedule">Book a class</a>`}
+        ${cancelled.length ? `<p style="margin-top:20px;font-size:13px">${cancelled.length} cancelled</p>` : ""}
+      </div>
+      <div class="grid" style="gap:20px">
+        <div class="card"><h3>Membership</h3>${state.plan ? `<p style="margin:8px 0"><b style="color:var(--navy)">${esc(state.plan.name)}</b></p><p>${state.plan.kind === "unlimited" ? "Unlimited classes and The Flow" : "Credits reset monthly"}</p>` : `<p style="margin:8px 0 16px">No membership yet.</p><a class="btn solid sm" href="#/pricing">See memberships</a>`}</div>
+        <div class="card"><h3>Balances</h3><div class="grid g3" style="gap:12px;margin-top:12px"><div><div class="stat-big">${hasMembership() ? "∞" : state.credits}</div><p>Class credits</p></div><div><div class="stat-big">${state.resetCredits}</div><p>Reset credits</p></div><div><div class="stat-big">${state.guestPasses}</div><p>Guest passes</p></div></div></div>
+        <div class="card"><h3>Waiver</h3><p>${state.waiver ? `<span class="pill ok">Signed</span> by ${esc(state.waiver.name)} on ${fmtDay(state.waiver.at)}` : `<span class="pill warn">Not signed</span> You'll sign it at your first booking.`}</p></div>
+        <div class="card"><h3>Invite a friend</h3><p style="margin-bottom:14px">Share a guest pass for their first visit.</p><button class="btn navy sm" id="share">Copy invite link</button></div>
+        <div class="card"><h3>On demand</h3><p style="margin-bottom:14px">Flow State classes to stream at home. Coming soon.</p><span class="pill">Members</span></div>
+        ${state.orders.length ? `<div class="card"><h3>Purchases</h3>${state.orders.map(o => `<div class="bk"><div><b style="font-size:14px">${esc(o.name)}</b><small>${fmtDay(o.at)}</small></div><span>${money(o.price)}</span></div>`).join("")}</div>` : ""}
+      </div>
+    </div></section>`;
+}
+function bindAccount() {
+  const b = $("#acct-in"); if (b) b.onclick = () => { openModal(""); signIn(() => { closeModal(); render(); }, true); };
+  const s = $("#share"); if (s) s.onclick = () => toast("Invite link copied (demo)");
+  document.querySelectorAll("[data-cancel]").forEach(btn => btn.onclick = () => {
+    const bk = state.bookings.find(x => x.id === btn.dataset.cancel); const late = btn.dataset.late === "1";
+    openModal(`<h2>${bk.status === "waitlist" ? "Leave the waitlist?" : "Cancel booking?"}</h2>${ticket({ ...bk, label: bk.kind === "flow" ? "The Flow" : bk.kind === "reset" ? "Reset Room" : "Class" })}
+      ${late ? `<p><span class="pill warn">Late cancel</span> This is within 12 hours of the start, so the credit won't be returned.</p>` : `<p>Your credit will go back to your account.</p>`}
+      <div class="row-btns"><button class="btn solid" id="yes">${bk.status === "waitlist" ? "Leave waitlist" : "Cancel booking"}</button><button class="btn navy" data-close>Keep it</button></div>`);
+    $("#yes").onclick = () => { bk.status = "cancelled"; if (!late && bk.paidWith === "credit") state.credits++; if (!late && bk.paidWith === "reset-credit") state.resetCredits++; closeModal(); toast(late ? "Cancelled · late cancel" : "Cancelled · credit returned"); render(); };
+  });
+}
+
+// ───────── Router ─────────
+function qs(base, obj) { const p = new URLSearchParams(); Object.entries(obj).forEach(([k, v]) => { if (v) p.set(k, v); }); const s = p.toString(); return s ? `${base}?${s}` : base; }
+function parse() { const h = location.hash.slice(1) || "/"; const [path, query] = h.split("?"); return { parts: path.split("/").filter(Boolean), q: Object.fromEntries(new URLSearchParams(query || "")) }; }
+let lastPath = "";
+function render() {
+  const { parts, q } = parse(); const app = $("#app"); const p = parts[0] || "";
+  if (p !== "reset") resetMode = { mode: "solo", member: null, guest: null };
+  const views = {
+    "": () => [home(), () => { $("#lead").onsubmit = e => { e.preventDefault(); e.target.outerHTML = `<div class="card" style="padding:32px"><div class="big-check">✓</div><h3>You're on the list</h3><p>We'll be in touch about Founding Memberships and opening news. (Prototype: nothing was sent.)</p></div>`; }; }],
+    schedule: () => [scheduleView(q), () => bindSchedule(q)],
+    flow: () => [flowView(q), () => bindFlow(q)],
+    reset: () => [resetView(q), () => bindReset(q)],
+    classes: () => [classesView(parts[1]), () => document.querySelectorAll("[data-class]").forEach(b => b.onclick = () => classModal(b.dataset.class))],
+    instructors: () => [instructorsView(parts[1]), () => {}],
+    events: () => [eventsView(), bindEvents],
+    pricing: () => [pricingView(), () => document.querySelectorAll("[data-buy]").forEach(b => b.onclick = () => buy(b.dataset.buy))],
+    account: () => [accountView(), bindAccount],
+  };
+  const [html, bind] = (views[p] || views[""])();
+  const y = window.scrollY; app.innerHTML = html; bind();
+  const path = parts.join("/");
+  const sameView = path === lastPath || (p === lastPath.split("/")[0] && ["schedule", "flow", "reset"].includes(p));
+  if (!sameView) window.scrollTo(0, 0); else window.scrollTo(0, y);
+  lastPath = path;
+  document.querySelectorAll("nav.main a").forEach(a => a.classList.toggle("on", a.getAttribute("href") === "#/" + p));
+  $("#nav").classList.remove("open");
+}
+function renderHeader() {
+  $("#hdr-actions").innerHTML = state.user
+    ? `<a class="acct" href="#/account"><span class="avatar">${esc(state.user.name[0])}</span><span>Account</span></a><a class="btn solid sm" href="#/schedule">Book</a>`
+    : `<button class="acct" id="hdr-in" style="background:none;border:0">Sign in</button><a class="btn solid sm" href="#/schedule">Book a class</a>`;
+  const b = $("#hdr-in"); if (b) b.onclick = () => { openModal(""); signIn(() => { closeModal(); render(); toast("Welcome, Jordan"); }, true); };
+}
+$("#burger").onclick = () => $("#nav").classList.toggle("open");
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
+window.addEventListener("hashchange", () => { closeModal(); render(); });
+renderHeader(); render();
+</script>
+</body>
+</html>
