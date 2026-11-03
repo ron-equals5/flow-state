@@ -3,5 +3,6 @@
   "name": "flow-state",
   "main": "src/index.ts",
   "compatibility_date": "2026-10-01",
-  "observability": { "enabled": true }
+  "observability": { "enabled": true },
+  "assets": { "directory": "./public", "html_handling": "drop-trailing-slash" }
 }

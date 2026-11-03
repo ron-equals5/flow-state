@@ -1,0 +1,534 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Flow State Portal Plan</title>
+<meta name="description" content="Plan for Flow State Studio's website, booking and studio-management platform.">
+<style>
+  :root {
+    --navy: #09003e;
+    --navy-2: #120a52;
+    --navy-3: #1c1366;
+    --line: rgba(153, 130, 227, .22);
+    --lavender: #9982e3;
+    --lavender-soft: #c9bdf3;
+    --pink: #e64fb9;
+    --flame: #ee2405;
+    --ink: #f4f1ff;
+    --muted: #b3a9d9;
+    --ok: #5fd3a0;
+    --no: #ff7a6b;
+    --radius: 18px;
+    --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+  body {
+    margin: 0; background: var(--navy); color: var(--ink);
+    font: 16px/1.6 var(--sans); -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--lavender-soft); }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+  /* Nav */
+  nav.top {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(9, 0, 62, .88); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+  }
+  nav.top .wrap { display: flex; align-items: center; gap: 24px; height: 60px; }
+  .brand { font-weight: 800; letter-spacing: .06em; text-transform: uppercase; font-size: 15px; white-space: nowrap; color: var(--ink); text-decoration: none; }
+  .brand span { color: var(--pink); }
+  .links { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; margin-left: auto; }
+  .links::-webkit-scrollbar { display: none; }
+  .links a {
+    color: var(--muted); text-decoration: none; font-size: 13px; font-weight: 600;
+    letter-spacing: .04em; text-transform: uppercase; padding: 8px 12px; border-radius: 999px; white-space: nowrap;
+  }
+  .links a:hover, .links a.active { color: var(--ink); background: var(--navy-3); }
+
+  /* Hero */
+  header.hero { position: relative; overflow: hidden; padding: 88px 0 72px; border-bottom: 1px solid var(--line); }
+  header.hero::before {
+    content: ""; position: absolute; inset: -40% -10% auto auto; width: 720px; height: 720px;
+    background: radial-gradient(circle, rgba(230,79,185,.35), rgba(153,130,227,.12) 45%, transparent 70%);
+    pointer-events: none;
+  }
+  .eyebrow { font-size: 13px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--lavender); }
+  h1 {
+    font-size: clamp(2.4rem, 6.4vw, 4.8rem); line-height: .98; letter-spacing: -.01em;
+    text-transform: uppercase; font-weight: 800; margin: 16px 0 20px; max-width: 14ch;
+  }
+  h1 em { font-style: normal; background: linear-gradient(90deg, var(--lavender), var(--pink) 55%, var(--flame)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .lede { font-size: clamp(1.05rem, 1.8vw, 1.25rem); color: var(--muted); max-width: 62ch; margin: 0; }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px; }
+  .chip { font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); color: var(--lavender-soft); }
+  .chip.hot { background: var(--pink); border-color: var(--pink); color: #fff; }
+
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 48px; }
+  .stat { background: var(--navy-2); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; }
+  .stat b { display: block; font-size: clamp(1.6rem, 3vw, 2.2rem); line-height: 1.1; font-weight: 800; }
+  .stat span { font-size: 13px; color: var(--muted); }
+
+  /* Sections */
+  section { padding: 72px 0; border-bottom: 1px solid var(--line); }
+  .sec-head { display: flex; align-items: baseline; gap: 16px; margin-bottom: 28px; }
+  .num { font-size: 13px; font-weight: 800; color: var(--pink); letter-spacing: .1em; }
+  h2 { font-size: clamp(1.6rem, 3.4vw, 2.4rem); text-transform: uppercase; font-weight: 800; margin: 0; letter-spacing: -.005em; line-height: 1.05; }
+  h3 { font-size: 1.05rem; margin: 0 0 8px; font-weight: 700; }
+  p.intro { color: var(--muted); max-width: 70ch; margin: -8px 0 28px; }
+  .small { font-size: 13px; color: var(--muted); }
+
+  .grid { display: grid; gap: 16px; }
+  .g2 { grid-template-columns: repeat(2, 1fr); }
+  .g3 { grid-template-columns: repeat(3, 1fr); }
+  .card { background: var(--navy-2); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; }
+  .card p { margin: 0; color: var(--muted); font-size: 15px; }
+  .card ul { margin: 8px 0 0; padding-left: 18px; color: var(--muted); font-size: 15px; }
+  .card ul li { margin: 4px 0; }
+  .card.accent { background: linear-gradient(160deg, rgba(230,79,185,.18), rgba(153,130,227,.06) 60%), var(--navy-2); border-color: rgba(230,79,185,.45); }
+  .tag { display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; padding: 3px 9px; border-radius: 999px; margin-bottom: 12px; }
+  .tag.custom { background: var(--pink); color: #fff; }
+  .tag.std { background: var(--navy-3); color: var(--lavender-soft); }
+  .tag.risk { background: var(--flame); color: #fff; }
+
+  /* Tables */
+  .table { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--navy-2); }
+  table { width: 100%; border-collapse: collapse; font-size: 15px; min-width: 620px; }
+  th, td { text-align: left; padding: 14px 18px; vertical-align: top; border-bottom: 1px solid var(--line); }
+  tr:last-child td { border-bottom: 0; }
+  th { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--lavender); font-weight: 700; background: rgba(153,130,227,.06); }
+  td:first-child { font-weight: 600; color: var(--ink); }
+  td { color: var(--muted); }
+  tr.total td { color: var(--ink); font-weight: 800; background: rgba(230,79,185,.08); }
+  .yes, .no { display: inline-block; font-size: 12px; font-weight: 800; letter-spacing: .04em; padding: 2px 9px; border-radius: 999px; white-space: nowrap; }
+  .yes { background: rgba(95,211,160,.14); color: var(--ok); }
+  .no { background: rgba(255,122,107,.14); color: var(--no); }
+
+  /* Approach split */
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .split .card h3 { font-size: 13px; letter-spacing: .1em; text-transform: uppercase; color: var(--lavender); }
+  .split .card.accent h3 { color: var(--pink); }
+  .callout { margin-top: 16px; padding: 18px 22px; border-left: 3px solid var(--pink); background: rgba(230,79,185,.08); border-radius: 0 12px 12px 0; color: var(--lavender-soft); }
+
+  /* Architecture */
+  .arch { display: grid; grid-template-columns: 1fr 1.4fr 1fr; gap: 16px; align-items: stretch; }
+  .arch .col { display: flex; flex-direction: column; gap: 12px; }
+  .node { background: var(--navy-2); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; font-size: 14px; color: var(--muted); }
+  .node b { display: block; color: var(--ink); font-size: 14px; margin-bottom: 2px; }
+  .node.core { border-color: rgba(230,79,185,.5); background: linear-gradient(160deg, rgba(230,79,185,.16), transparent 70%), var(--navy-2); }
+  .node.arketa { border-color: rgba(153,130,227,.5); }
+  .col-label { font-size: 12px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--lavender); }
+  .flow-arrow { text-align: center; color: var(--pink); font-weight: 800; font-size: 13px; letter-spacing: .06em; }
+
+  /* Timeline */
+  .timeline { position: relative; display: grid; gap: 16px; padding-left: 32px; }
+  .timeline::before { content: ""; position: absolute; left: 9px; top: 8px; bottom: 8px; width: 2px; background: linear-gradient(var(--pink), var(--lavender) 60%, transparent); }
+  .phase { position: relative; }
+  .phase::before { content: ""; position: absolute; left: -29px; top: 26px; width: 14px; height: 14px; border-radius: 50%; background: var(--navy); border: 3px solid var(--pink); }
+  .phase .when { font-size: 12px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--pink); }
+  .phase h3 { font-size: 1.25rem; margin: 4px 0 10px; text-transform: uppercase; }
+  .phase ul { columns: 2; column-gap: 32px; }
+  .phase li { break-inside: avoid; }
+
+  /* Questions */
+  ol.qs { counter-reset: q; list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  ol.qs li { counter-increment: q; position: relative; background: var(--navy-2); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px 16px 58px; color: var(--muted); font-size: 15px; }
+  ol.qs li::before { content: counter(q, decimal-leading-zero); position: absolute; left: 18px; top: 15px; font-weight: 800; color: var(--pink); font-size: 14px; }
+  ol.qs li b { color: var(--ink); }
+
+  footer { padding: 48px 0 64px; color: var(--muted); font-size: 13px; }
+  footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; }
+
+  @media (max-width: 860px) {
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .g3 { grid-template-columns: 1fr 1fr; }
+    .arch { grid-template-columns: 1fr; }
+    .phase ul { columns: 1; }
+  }
+  @media (max-width: 640px) {
+    .wrap { padding: 0 16px; }
+    header.hero { padding: 56px 0 48px; }
+    section { padding: 52px 0; }
+    .g2, .g3, .split, ol.qs { grid-template-columns: 1fr; }
+    .brand { font-size: 13px; }
+    nav.top .wrap { gap: 12px; }
+    .card { padding: 20px; }
+  }
+  @media print {
+    nav.top { display: none; }
+    body { background: #fff; color: #111; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="top" aria-label="Plan sections">
+  <div class="wrap">
+    <a class="brand" href="#top">Flow <span>State</span></a>
+    <div class="links">
+      <a href="#approach">Approach</a>
+      <a href="#platform">Platform</a>
+      <a href="#users">Users</a>
+      <a href="#booking">Booking</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#phases">Phases</a>
+      <a href="#costs">Costs</a>
+      <a href="#questions">Questions</a>
+      <a href="#risks">Risks</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <div class="eyebrow">Web Portal Plan · Draft 1 · November 2, 2026</div>
+    <h1>Built to help clients <em>find their flow.</em></h1>
+    <p class="lede">The plan for Flow State Studio's website, client app and studio-management platform in Cedar Grove, NJ. Arketa runs the business, and a custom Flow State layer delivers the branded experience and the bookings off-the-shelf tools can't handle.</p>
+    <div class="meta">
+      <span class="chip hot">Hybrid approach</span>
+      <span class="chip">Arketa + Cloudflare</span>
+      <span class="chip">Opening Nov 2026</span>
+    </div>
+    <div class="stats">
+      <div class="stat"><b>3</b><span>Bookable spaces</span></div>
+      <div class="stat"><b>5</b><span>Booking types, 3 of them custom</span></div>
+      <div class="stat"><b>4</b><span>Delivery phases</span></div>
+      <div class="stat"><b>~$650–1.1k</b><span>Software per month</span></div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<section id="approach">
+  <div class="wrap">
+    <div class="sec-head"><span class="num">01</span><h2>The approach</h2></div>
+    <p class="intro">Arketa is the system of record. Everything the custom layer can't do through Arketa's API falls back to Arketa's own widgets and branded app, so nothing blocks opening day.</p>
+    <div class="split">
+      <div class="card">
+        <h3>Arketa runs the business</h3>
+        <ul>
+          <li>Clients, memberships, packs and payments</li>
+          <li>Waivers and waitlists</li>
+          <li>Front-desk POS and hardware</li>
+          <li>Payroll reporting and staff tools</li>
+          <li>Email and SMS marketing</li>
+          <li>Branded client app and video on demand</li>
+        </ul>
+      </div>
+      <div class="card accent">
+        <h3>The Flow State layer</h3>
+        <ul>
+          <li>Branded website on Cloudflare</li>
+          <li>Schedule with instructor, class type, class name and heat filters</li>
+          <li>Class description library and instructor profiles</li>
+          <li>The Flow booking: pick a block, then a start time</li>
+          <li>Reset Room booking with invite-a-guest</li>
+          <li>Lead capture that feeds Arketa's CRM</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout"><b>Rule of thumb:</b> if Arketa does it well, use Arketa. If it's how clients see and book Flow State, or something Arketa can't do, build it on Cloudflare.</div>
+  </div>
+</section>
+
+<section id="platform">
+  <div class="wrap">
+    <div class="sec-head"><span class="num">02</span><h2>Why Arketa</h2></div>
+    <p class="intro">Arketa publishes a Partner API that can book, cancel and check in clients. Walla has no published API, which would limit us to embedding its widget.</p>
+    <div class="table">
+      <table>
+        <thead><tr><th></th><th>Arketa</th><th>Walla</th></tr></thead>
+        <tbody>
+          <tr><td>Developer API</td><td><span class="yes">Yes</span> Partner API with an API key. Reads classes, clients and purchases; creates, cancels and checks in reservations.</td><td><span class="no">None published</span> Integrations limited to Zapier, ClassPass and Zoom.</td></tr>
+          <tr><td>Custom booking on top</td><td>Possible for anything set up as a class</td><td>Embed only</td></tr>
+          <tr><td>Branded app, POS, payroll, CRM</td><td>Built in (confirm tiers in demo)</td><td>Built in</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="margin:48px 0 16px; text-transform:uppercase; letter-spacing:.06em;">What Arketa's API can and can't do</h3>
+    <div class="table">
+      <table>
+        <thead><tr><th>Need</th><th>API</th><th>Plan</th></tr></thead>
+        <tbody>
+          <tr><td>Read schedule, classes, rooms</td><td><span class="yes">Read</span></td><td>Sync into our database on a timer</td></tr>
+          <tr><td>Book a class for a client</td><td><span class="yes">Write</span></td><td>Custom booking screens</td></tr>
+          <tr><td>Cancel, late-cancel, refund</td><td><span class="yes">Write</span></td><td>Custom account screens</td></tr>
+          <tr><td>Check-in</td><td><span class="yes">Write</span></td><td>Instructor check-in view (later)</td></tr>
+          <tr><td>Read clients and purchases</td><td><span class="yes">Read</span></td><td>Show credits and memberships</td></tr>
+          <tr><td>Sell memberships, packs, merch</td><td><span class="no">No</span></td><td>Arketa checkout, app and front-desk POS</td></tr>
+          <tr><td>Create or edit classes</td><td><span class="no">No</span></td><td>Staff build the schedule in Arketa</td></tr>
+          <tr><td>Room / resource booking</td><td><span class="no">No</span></td><td>Reset Room workaround (see Booking)</td></tr>
+          <tr><td>Waitlists</td><td><span class="no">No</span></td><td>Arketa's native waitlist</td></tr>
+          <tr><td>Change notifications</td><td><span class="no">No</span></td><td>Poll every few minutes with Cloudflare Cron</td></tr>
+          <tr><td>Test environment</td><td><span class="no">No</span></td><td>Separate test location or account</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small" style="margin-top:12px">From Arketa's published Partner API spec, Nov 2, 2026. The API is provided as-is, with a rate limit of about 25 requests per second.</p>
+  </div>
+</section>
+
+<section id="users">
+  <div class="wrap">
+    <div class="sec-head"><span class="num">03</span><h2>Who uses what</h2></div>
+    <div class="grid g3">
+      <div class="card"><span class="tag std">Arketa dashboard</span><h3>Owner / Manager</h3><p>Reporting, payroll, pricing and staff.</p></div>
+      <div class="card"><span class="tag std">Arketa + POS</span><h3>Front Desk</h3><p>Check-in, POS, client accounts and selling memberships.</p></div>
+      <div class="card"><span class="tag std">Arketa staff app</span><h3>Instructors</h3><p>Class rosters and client check-in.</p></div>
+      <div class="card accent"><span class="tag custom">Flow State site</span><h3>Visitors</h3><p>Browse the schedule, classes, instructors and pricing.</p></div>
+      <div class="card accent"><span class="tag custom">Site → Arketa CRM</span><h3>Leads</h3><p>Request info, claim an intro offer and get a welcome journey.</p></div>
+      <div class="card accent"><span class="tag custom">Site + branded app</span><h3>Members & Guests</h3><p>Book, buy, manage accounts, sign waivers, invite a guest and watch on demand.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="booking">
+  <div class="wrap">
+    <div class="sec-head"><span class="num">04</span><h2>Spaces &amp; bookings</h2></div>
+    <div class="grid g3" style="margin-bottom:40px">
+      <div class="card"><span class="tag std">1st Floor</span><h3>Non-heated studio</h3><p>Instructor-led group classes and The Flow circuit.</p></div>
+      <div class="card"><span class="tag std">2nd Floor</span><h3>Infrared-heated studio</h3><p>Heated and non-heated classes, flagged per class for filtering.</p></div>
+      <div class="card"><span class="tag std">Reset Room</span><h3>Wellness &amp; recovery</h3><p>Self-serve equipment, rented by the time slot.</p></div>
+    </div>
+
+    <div class="grid g2">
+      <div class="card accent">
+        <span class="tag custom">Custom</span>
+        <h3>The Flow</h3>
+        <p>A video-guided drop-in circuit. Each start time is set up as a small class in Arketa. Our picker shows two steps: <b>choose the block, then choose a start time</b>, with live spots for each.</p>
+      </div>
+      <div class="card accent">
+        <span class="tag custom">Custom</span><span class="tag risk" style="margin-left:6px">Biggest risk</span>
+        <h3>Reset Room</h3>
+        <p>One person books the slot and invites one other: an existing member, or a first-time guest with a guest pass and waiver. The API can't book rooms, so we'll confirm in the Arketa demo whether a two-spot class works. If not, it gets its own booking engine on Cloudflare.</p>
+      </div>
+      <div class="card accent">
+        <span class="tag custom">Custom</span>
+        <h3>Restricted Flow blocks</h3>
+        <p>Flow blocks limited to certain clients. Who they're for and how they're enforced still need defining. Arketa can likely limit which purchases are valid for a class.</p>
+      </div>
+      <div class="card">
+        <span class="tag std">Arketa native</span>
+        <h3>Instructor-led classes</h3>
+        <p>Standard classes tagged by type, floor and heat, shown in our filtered schedule.</p>
+      </div>
+      <div class="card">
+        <span class="tag std">Arketa native</span>
+        <h3>Pop-ups &amp; Events</h3>
+        <p>Their own pricing, and member credits don't apply. Event pages on our site, with checkout through Arketa.</p>
+      </div>
+      <div class="card">
+        <span class="tag std">Arketa native</span>
+        <h3>Workshop Series</h3>
+        <p>Several classes sold as one purchase. Series pages on our site, with checkout through Arketa.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="architecture">
+  <div class="wrap">
+    <div class="sec-head"><span class="num">05</span><h2>Architecture</h2></div>
+    <p class="intro">The custom layer runs on Cloudflare Workers. A scaffold is already live. The Arketa API key is stored as a secret and never reaches the browser.</p>
+    <div class="arch">
+      <div class="col">
+        <div class="col-label">People</div>
+        <div class="node"><b>Visitors &amp; leads</b>Browse and request info</div>
+        <div class="node"><b>Members &amp; guests</b>Book, buy, invite</div>
+        <div class="node"><b>Staff</b>Front desk, instructors, owners</div>
+      </div>
+      <div class="col">
+        <div class="col-label">Flow State layer · Cloudflare</div>
+        <div class="node core"><b>Website</b>Astro on Workers, in Flow State's brand colors and type</div>
+        <div class="node core"><b>Booking API</b>The Flow picker and Reset Room invites, calling Arketa reservations</div>
+        <div class="node core"><b>D1 database</b>Class library, instructor profiles, filter tags, schedule cache</div>
+        <div class="node core"><b>Cron sync</b>Pulls the schedule from Arketa every few minutes</div>
+        <div class="node core"><b>Durable Objects</b>Prevents double-booking, if the Reset Room needs its own engine</div>
+      </div>
+      <div class="col">
+        <div class="col-label">Arketa · System of record</div>
+        <div class="node arketa"><b>Partner API</b>Reservations, clients, purchases</div>
+        <div class="node arketa"><b>Widgets &amp; branded app</b>Checkout, waivers, waitlists</div>
+        <div class="node arketa"><b>Dashboard &amp; POS</b>Front desk, payroll, marketing</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="phases">
+  <div class="wrap">
+    <div class="sec-head"><span class="num">06</span><h2>Phases</h2></div>
+    <div class="timeline">
+      <div class="phase card">
+        <div class="when">Phase 0 · This week</div>
+        <h3>Decide &amp; set up</h3>
+        <ul>
+          <li>Arketa demo on the open questions, then sign up and pick a tier</li>
+          <li>Confirm the opening date and booking go-live</li>
+          <li>Generate the Arketa API key and test it</li>
+          <li>Export "Get First Access" leads from Squarespace</li>
+        </ul>
+      </div>
+      <div class="phase card">
+        <div class="when">Phase 1 · Before opening day</div>
+        <h3>Open for business</h3>
+        <ul>
+          <li>Full Arketa setup: spaces, classes, instructors, pricing, waivers, staff roles, POS, payroll</li>
+          <li>The Flow and Reset Room set up natively in Arketa as a stopgap</li>
+          <li>New website on Cloudflare with Arketa widgets embedded</li>
+          <li>Lead form into Arketa, with a welcome journey</li>
+          <li>Branded client app launched through Arketa</li>
+          <li>Move flowstatestudionj.com from Squarespace</li>
+        </ul>
+      </div>
+      <div class="phase card">
+        <div class="when">Phase 2 · Opening + 4–6 weeks</div>
+        <h3>Custom schedule &amp; The Flow</h3>
+        <ul>
+          <li>Schedule sync from Arketa</li>
+          <li>Custom schedule with all four filters</li>
+          <li>Class library and instructor profiles</li>
+          <li>The Flow picker: block, then start time</li>
+          <li>Member sign-in, my bookings and cancel</li>
+        </ul>
+      </div>
+      <div class="phase card">
+        <div class="when">Phase 3 · Opening + 2–3 months</div>
+        <h3>Reset Room &amp; growth</h3>
+        <ul>
+          <li>Reset Room booking with invite-a-guest and waivers</li>
+          <li>Restricted Flow blocks</li>
+          <li>CRM journeys: intro offer, first visit, membership, win-back</li>
+          <li>Owner dashboard, if Arketa's reports fall short</li>
+        </ul>
+      </div>
+      <div class="phase card">
+        <div class="when">Phase 4 · Evaluate</div>
+        <h3>Grow the platform</h3>
+        <ul>
+          <li>Decide whether a custom app is worth building</li>
+          <li>Revisit anything Arketa can't do, including its enterprise agreement</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="costs">
+  <div class="wrap">
+    <div class="sec-head"><span class="num">07</span><h2>Costs</h2></div>
+    <p class="intro">Tools only. Arketa's studio plans are quote-only, so its figures come from third-party reviews and need confirming in the demo. Design and development time isn't included.</p>
+    <div class="stats" style="grid-template-columns:repeat(3,1fr); margin:0 0 32px">
+      <div class="stat"><b>$650–1,150</b><span>Software per month</span></div>
+      <div class="stat"><b>2.7–2.9%</b><span>Card processing (Stripe)</span></div>
+      <div class="stat"><b>$500–700</b><span>One-time hardware</span></div>
+    </div>
+    <div class="table">
+      <table>
+        <thead><tr><th>Monthly</th><th>Est. cost</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Arketa Studio Suite</td><td>$350–700</td><td>Only tier with the branded app. Core (~$200) and Growth (~$450) lack it.</td></tr>
+          <tr><td>Gusto payroll</td><td>~$140</td><td>$49 base + $6 per person, assuming 15 staff</td></tr>
+          <tr><td>Slack Pro (optional)</td><td>$0–130</td><td>$7.25–8.75 per user, or $0 with Arketa or WhatsApp</td></tr>
+          <tr><td>Zapier Professional</td><td>$20–30</td><td>Lead form into Arketa</td></tr>
+          <tr><td>Cloudflare Workers</td><td>$5</td><td>Site, database, sync and booking at this scale</td></tr>
+          <tr><td>Domain</td><td>~$1</td><td>About $10–12 a year</td></tr>
+          <tr class="total"><td>Total</td><td>~$650–1,150</td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="grid g2" style="margin-top:16px">
+      <div class="card">
+        <h3>Card processing</h3>
+        <p>2.9% + 30¢ online and 2.7% + 5¢ in person. At $40,000 a month in card sales, that's about $1,100–1,200 in fees.</p>
+      </div>
+      <div class="card">
+        <h3>One-time</h3>
+        <p>Card readers ~$360 (Stripe S700 + M2). Receipt printer and cash drawer ~$150–300. Arketa setup fee unknown.</p>
+      </div>
+      <div class="card">
+        <h3>Only if needed later</h3>
+        <p>Cloudflare Stream video ($5 per 1,000 minutes stored, $1 per 1,000 watched). Custom app: Apple $99/yr, Google Play $25, Expo $0–19/mo.</p>
+      </div>
+      <div class="card">
+        <h3>Arketa enterprise</h3>
+        <p>Reported to start at $10,000 a year. Only worth it if API limits block Phase 2–3 work.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="questions">
+  <div class="wrap">
+    <div class="sec-head"><span class="num">08</span><h2>Open questions</h2></div>
+    <h3 style="margin-bottom:16px; color:var(--lavender); text-transform:uppercase; letter-spacing:.08em; font-size:13px">For the studio</h3>
+    <ol class="qs">
+      <li><b>Opening date.</b> What's the exact date, and when must booking go live?</li>
+      <li><b>The Flow.</b> How long are the blocks, how often do start times run, how many per start, and how long is the circuit?</li>
+      <li><b>Restricted Flow blocks.</b> Who are they restricted to, and why?</li>
+      <li><b>Reset Room.</b> Slot length and price? Do credits apply? How do guest passes work?</li>
+      <li><b>Pricing.</b> The full list for memberships, packs, single classes, events and series.</li>
+      <li><b>On-demand video.</b> Needed at launch or later? Where will the content come from?</li>
+      <li><b>Hardware.</b> Which card reader and receipt printer? Is door access in scope?</li>
+      <li><b>Staff chat.</b> In Arketa, or a separate tool like Slack or WhatsApp?</li>
+      <li><b>Content.</b> Who supplies class descriptions, instructor bios and photos, and when?</li>
+    </ol>
+    <h3 style="margin:40px 0 16px; color:var(--lavender); text-transform:uppercase; letter-spacing:.08em; font-size:13px">For the Arketa demo</h3>
+    <ol class="qs">
+      <li><b>Suite price.</b> Exact monthly price, and is there an annual discount?</li>
+      <li><b>Branded app.</b> Included in Suite, or a paid add-on?</li>
+      <li><b>Processing.</b> Any Arketa markup on Stripe rates for studio plans?</li>
+      <li><b>SMS.</b> What do text messages and campaigns cost?</li>
+      <li><b>Setup.</b> Is there an onboarding fee?</li>
+      <li><b>Hardware.</b> Which readers, printers and cash drawers are supported?</li>
+      <li><b>Reset Room.</b> Can a room rental work as a two-spot class with a guest invite?</li>
+    </ol>
+  </div>
+</section>
+
+<section id="risks">
+  <div class="wrap">
+    <div class="sec-head"><span class="num">09</span><h2>Risks</h2></div>
+    <div class="grid g2">
+      <div class="card"><span class="tag risk">Timeline</span><h3>Opening this month</h3><p>Phase 1 relies on Arketa as it comes, and custom work follows opening.</p></div>
+      <div class="card"><span class="tag risk">Platform</span><h3>Arketa API is "as-is"</h3><p>No sandbox or webhooks. We'll use a test location, polling with caching, monitoring, and fallback to Arketa widgets.</p></div>
+      <div class="card"><span class="tag risk">Booking</span><h3>Reset Room can't be booked via API</h3><p>Confirm the setup in the demo. The fallback is our own booking engine on Cloudflare.</p></div>
+      <div class="card"><span class="tag risk">Data</span><h3>Data in two places</h3><p>Arketa is always the source of truth. Our layer only caches and links to it.</p></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Flow State Studio · Cedar Grove, NJ</span>
+    <span>Draft 1 · November 2, 2026 · Prices researched Nov 2, 2026</span>
+  </div>
+</footer>
+
+<script>
+  // Highlight the nav link for the section in view.
+  const links = [...document.querySelectorAll('.links a')];
+  const byId = Object.fromEntries(links.map(a => [a.getAttribute('href').slice(1), a]));
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      links.forEach(a => a.classList.remove('active'));
+      const a = byId[e.target.id];
+      if (a) {
+        a.classList.add('active');
+        const bar = a.parentElement;
+        bar.scrollTo({ left: a.offsetLeft - (bar.clientWidth - a.offsetWidth) / 2, behavior: 'smooth' });
+      }
+    });
+  }, { rootMargin: '-45% 0px -50% 0px' });
+  document.querySelectorAll('section[id]').forEach(s => io.observe(s));
+</script>
+</body>
+</html>
